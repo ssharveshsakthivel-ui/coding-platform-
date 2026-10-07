@@ -1,46 +1,30 @@
 import { Link } from 'react-router-dom';
 import { problems } from '../data/problems';
-import { ChevronRight, Trophy, Code, TerminalSquare, BugOff } from 'lucide-react';
+import { ChevronRight, Trophy, Code } from 'lucide-react';
+import { useState } from 'react';
+import { Intro } from '../components/Intro';
 
 export function Home() {
-  return (
-    <div className="max-w-5xl mx-auto w-full px-6 py-12 flex-1">
-      <div className="relative mb-16 py-16 flex flex-col items-center justify-center overflow-hidden rounded-2xl bg-[#0a0a0a] border border-gray-800 shadow-[0_0_50px_rgba(236,72,153,0.15)]">
-        {/* Neon Glow Blobs */}
-        <div className="absolute -left-10 top-0 w-48 h-48 bg-pink-600 rounded-full mix-blend-screen filter blur-[80px] opacity-40"></div>
-        <div className="absolute -right-10 bottom-0 w-48 h-48 bg-cyan-400 rounded-full mix-blend-screen filter blur-[80px] opacity-40"></div>
-        
-        {/* Floating Code Elements */}
-        <div className="absolute left-8 top-12 transform -rotate-12">
-          <span className="text-5xl font-black text-cyan-400 drop-shadow-[0_0_10px_rgba(34,211,238,0.8)]">&lt;/&gt;</span>
-        </div>
-        <div className="absolute right-12 top-10 transform rotate-12">
-          <BugOff className="text-pink-500 w-14 h-14 drop-shadow-[0_0_15px_rgba(236,72,153,0.8)]" />
-        </div>
-        <div className="absolute left-16 bottom-16 transform -rotate-6">
-          <TerminalSquare className="text-cyan-400 w-12 h-12 drop-shadow-[0_0_10px_rgba(34,211,238,0.8)] opacity-80" />
-        </div>
-        
-        {/* Main Titles */}
-        <div className="flex flex-col items-center z-10 transform -rotate-2 scale-105 select-none">
-          <h1 className="text-6xl md:text-[5rem] font-black text-white tracking-tighter drop-shadow-lg mb-[-15px] uppercase" style={{ textShadow: '2px 2px 0 #000, -1px -1px 0 #333' }}>
-            GenCraft
-          </h1>
-          <h2 className="text-6xl md:text-[5.5rem] font-black text-transparent bg-clip-text bg-gradient-to-b from-pink-400 to-pink-600 drop-shadow-[0_0_20px_rgba(236,72,153,0.6)] tracking-tighter uppercase mb-[-10px] leading-none">
-            BUG BUSTER
-          </h2>
-          <h3 className="text-4xl md:text-5xl font-black text-cyan-400 drop-shadow-[0_0_15px_rgba(34,211,238,0.7)] tracking-tight uppercase transform rotate-1 mt-2">
-            CHALLENGE
-          </h3>
-        </div>
+  const [showIntro, setShowIntro] = useState(() => {
+    return !sessionStorage.getItem('introPlayed');
+  });
 
-        {/* Badges */}
-        <div className="flex items-center gap-4 mt-12 z-10 font-black text-white uppercase tracking-widest text-sm">
-          <span>Using</span>
-          <span className="bg-[#f04b4b] text-white px-5 py-2 rounded-lg shadow-[0_0_15px_rgba(239,68,68,0.5)] transform -rotate-2 tracking-wider">Java</span>
-          <span>And</span>
-          <span className="bg-[#1e78f0] text-white px-5 py-2 rounded-lg shadow-[0_0_15px_rgba(59,130,246,0.5)] transform rotate-2 tracking-wider">Python</span>
-        </div>
+  const handleIntroComplete = () => {
+    sessionStorage.setItem('introPlayed', 'true');
+    setShowIntro(false);
+  };
+
+  return (
+    <>
+      {showIntro && <Intro onComplete={handleIntroComplete} />}
+      <div className="max-w-5xl mx-auto w-full px-6 py-12 flex-1">
+      <div className="mb-12 text-center">
+        <h1 className="text-4xl md:text-5xl font-extrabold mb-4 tracking-tight">
+          GENCRAFT <span className="text-primary">BUGBUSTER EVENT</span>
+        </h1>
+        <p className="text-text-secondary text-lg max-w-2xl mx-auto">
+          BugBuster Sub-Event — Scenario-Based Debugging Challenge. Select a scenario below and fix the bugs to pass the hidden test cases.
+        </p>
       </div>
 
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
@@ -82,6 +66,7 @@ export function Home() {
           </Link>
         ))}
       </div>
-    </div>
+      </div>
+    </>
   );
 }
