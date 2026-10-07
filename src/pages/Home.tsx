@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { problems } from '../data/problems';
-import { ChevronRight, Trophy, Clock, Code } from 'lucide-react';
+import { ChevronRight, Trophy, Code } from 'lucide-react';
 
 export function Home() {
   return (

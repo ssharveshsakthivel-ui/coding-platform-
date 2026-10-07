@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { Editor } from '@monaco-editor/react';
-import { Play, Send, CheckCircle2, XCircle } from 'lucide-react';
+import { Play, Send } from 'lucide-react';
 import { problems } from '../data/problems';
 import { supabase } from '../lib/supabase';
 

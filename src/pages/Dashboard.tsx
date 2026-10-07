@@ -3,14 +3,6 @@ import { supabase } from '../lib/supabase';
 import { Trophy, Medal, Search, User, Lock, KeyRound } from 'lucide-react';
 import { problems } from '../data/problems';
 
-interface Submission {
-  id: number;
-  user_name: string;
-  problem_id: number;
-  score: number;
-  status: string;
-  created_at: string;
-}
 
 interface LeaderboardEntry {
   user_name: string;
