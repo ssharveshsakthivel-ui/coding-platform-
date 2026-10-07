@@ -1,72 +1,45 @@
 @import "tailwindcss";
 
 :root {
-  --primary: #ff00ff;
-  --primary-hover: #d900d9;
-  --bg-dark: #000000;
-  --panel-bg: rgba(15, 0, 30, 0.85);
-  --panel-border: #ff00ff;
-  --text-primary: #ffffff;
-  --text-secondary: #00ffff;
-  --success: #39ff14;
-  --warning: #ffea00;
-  --danger: #ff0033;
-}
-
-@keyframes rgb-bg {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+  --primary: #6366f1;
+  --primary-hover: #4f46e5;
+  --bg-dark: #020617;
+  --panel-bg: #0f172a;
+  --panel-border: #1e293b;
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
+  --success: #10b981;
+  --warning: #f59e0b;
+  --danger: #ef4444;
 }
 
 body {
   margin: 0;
   padding: 0;
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
-  background: linear-gradient(-45deg, #05001a, #1a0033, #001a33, #33001a, #1a001a);
-  background-size: 400% 400%;
-  animation: rgb-bg 10s ease infinite;
+  background-color: var(--bg-dark);
   color: var(--text-primary);
   -webkit-font-smoothing: antialiased;
 }
 
-@keyframes vibrate {
-  0% { transform: translate(0, 0); text-shadow: 2px 2px #00ffff, -2px -2px #ffff00; }
-  25% { transform: translate(-2px, 2px); text-shadow: -2px -2px #00ffff, 2px 2px #ffff00; }
-  50% { transform: translate(-2px, -2px); text-shadow: 2px -2px #00ffff, -2px 2px #ffff00; }
-  75% { transform: translate(2px, 2px); text-shadow: -2px 2px #00ffff, 2px -2px #ffff00; }
-  100% { transform: translate(0, 0); text-shadow: 2px 2px #00ffff, -2px -2px #ffff00; }
-}
-
-.bugbuster-glitch {
-  animation: vibrate 0.1s linear infinite;
-  color: #ff00ff;
-  display: inline-block;
-  font-weight: 900;
-  text-transform: uppercase;
-  letter-spacing: 2px;
-}
-
 /* Custom scrollbar */
 ::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
+  width: 8px;
+  height: 8px;
 }
 ::-webkit-scrollbar-track {
   background: var(--bg-dark);
 }
 ::-webkit-scrollbar-thumb {
-  background: #ff00ff;
-  border-radius: 5px;
-  border: 1px solid var(--bg-dark);
+  background: #334155;
+  border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #00ffff;
+  background: #475569;
 }
 
 .glass-panel {
-  background: var(--panel-bg);
-  backdrop-filter: blur(20px);
-  border: 2px solid rgba(255, 0, 255, 0.4);
-  box-shadow: 0 0 30px rgba(255, 0, 255, 0.3), inset 0 0 20px rgba(0, 255, 255, 0.15);
+  background: rgba(15, 23, 42, 0.7);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--panel-border);
 }

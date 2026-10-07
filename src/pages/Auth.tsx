@@ -49,64 +49,72 @@ export function Auth() {
   };
 
   return (
-    <div className="flex-1 flex items-center justify-center py-12 px-6">
-      <div className="glass-panel p-8 rounded-xl border border-panel-border w-full max-w-md flex flex-col items-center">
-        <div className="w-16 h-16 bg-primary/20 rounded-full flex items-center justify-center mb-6">
-          <Terminal className="text-primary" size={32} />
+    <div className="min-h-screen flex items-center justify-center py-12 px-6 bg-gradient-to-br from-[#ffffff] via-[#fff0e6] to-[#ffdac1] relative overflow-hidden text-gray-800">
+      
+      {/* Decorative blurred background shapes to enhance glassmorphism */}
+      <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-orange-300 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-pulse"></div>
+      <div className="absolute top-1/3 right-1/4 w-72 h-72 bg-[#ffdac1] rounded-full mix-blend-multiply filter blur-3xl opacity-50 animate-pulse" style={{ animationDelay: '2s' }}></div>
+
+      <div className="relative bg-white/40 backdrop-blur-xl border border-white/60 shadow-[0_8px_32px_0_rgba(234,88,12,0.15)] rounded-3xl p-10 w-full max-w-md flex flex-col items-center">
+        
+        {/* Logo/Icon Area */}
+        <div className="w-20 h-20 bg-gradient-to-tr from-orange-600 to-orange-400 rounded-2xl flex items-center justify-center mb-6 shadow-lg shadow-orange-500/30 transform -rotate-6 hover:rotate-0 transition-transform duration-300">
+          <Terminal className="text-white" size={40} />
         </div>
-        <h1 className="text-3xl font-bold mb-2 text-white">
-          GenCraft | <span className="bugbuster-glitch">BugBuster</span>
+        
+        <h1 className="text-4xl font-extrabold mb-2 tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-orange-700 to-orange-500">
+          GenCraft
         </h1>
-        <p className="text-text-secondary text-sm mb-8 text-center">
-          {isLogin ? 'Sign in to access the event dashboard' : 'Register your team to participate'}
+        <p className="text-orange-900/60 font-medium text-sm mb-8 text-center uppercase tracking-widest">
+          {isLogin ? 'BugBuster Login' : 'Team Registration'}
         </p>
 
-        {error && <div className="w-full p-3 mb-4 rounded bg-danger/20 border border-danger/50 text-danger text-sm">{error}</div>}
-        {message && <div className="w-full p-3 mb-4 rounded bg-success/20 border border-success/50 text-success text-sm">{message}</div>}
+        {error && <div className="w-full p-4 mb-5 rounded-xl bg-red-100 border border-red-200 text-red-600 text-sm font-medium shadow-sm">{error}</div>}
+        {message && <div className="w-full p-4 mb-5 rounded-xl bg-green-100 border border-green-200 text-green-700 text-sm font-medium shadow-sm">{message}</div>}
 
-        <form onSubmit={handleAuth} className="w-full flex flex-col gap-4">
+        <form onSubmit={handleAuth} className="w-full flex flex-col gap-5">
           {!isLogin && (
-            <div className="relative">
-              <Users className="absolute left-3 top-1/2 -translate-y-1/2 text-text-secondary" size={18} />
+            <div className="relative group">
+              <Users className="absolute left-4 top-1/2 -translate-y-1/2 text-orange-400 group-focus-within:text-orange-600 transition-colors" size={20} />
               <input 
                 type="text" 
                 required
                 placeholder="Team Name" 
                 value={teamName}
                 onChange={(e) => setTeamName(e.target.value)}
-                className="w-full bg-panel-bg border border-panel-border text-white pl-10 pr-4 py-3 rounded-lg outline-none focus:border-primary text-sm transition-colors"
+                className="w-full bg-white/60 border border-white/50 text-gray-800 placeholder-gray-400 pl-12 pr-4 py-3.5 rounded-xl outline-none focus:bg-white focus:border-orange-400 focus:ring-4 focus:ring-orange-500/10 transition-all font-medium"
               />
             </div>
           )}
           
-          <div className="relative">
-            <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-text-secondary" size={18} />
+          <div className="relative group">
+            <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-orange-400 group-focus-within:text-orange-600 transition-colors" size={20} />
             <input 
               type="email" 
               required
               placeholder="Email address" 
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full bg-panel-bg border border-panel-border text-white pl-10 pr-4 py-3 rounded-lg outline-none focus:border-primary text-sm transition-colors"
+              className="w-full bg-white/60 border border-white/50 text-gray-800 placeholder-gray-400 pl-12 pr-4 py-3.5 rounded-xl outline-none focus:bg-white focus:border-orange-400 focus:ring-4 focus:ring-orange-500/10 transition-all font-medium"
             />
           </div>
 
-          <div className="relative">
-            <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-text-secondary" size={18} />
+          <div className="relative group">
+            <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-orange-400 group-focus-within:text-orange-600 transition-colors" size={20} />
             <input 
               type="password" 
               required
               placeholder="Password" 
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full bg-panel-bg border border-panel-border text-white pl-10 pr-4 py-3 rounded-lg outline-none focus:border-primary text-sm transition-colors"
+              className="w-full bg-white/60 border border-white/50 text-gray-800 placeholder-gray-400 pl-12 pr-4 py-3.5 rounded-xl outline-none focus:bg-white focus:border-orange-400 focus:ring-4 focus:ring-orange-500/10 transition-all font-medium"
             />
           </div>
 
           <button 
             type="submit"
             disabled={loading}
-            className="w-full bg-primary hover:bg-primary-hover text-white font-medium py-3 rounded-lg transition-colors mt-2 disabled:opacity-50"
+            className="w-full bg-gradient-to-r from-orange-600 to-orange-500 hover:from-orange-500 hover:to-orange-400 text-white font-bold py-4 rounded-xl shadow-lg shadow-orange-500/30 transform hover:-translate-y-0.5 transition-all mt-2 disabled:opacity-50 disabled:transform-none"
           >
             {loading ? 'Processing...' : (isLogin ? 'Sign In' : 'Register Team')}
           </button>
@@ -114,7 +122,7 @@ export function Auth() {
 
         <button 
           onClick={() => { setIsLogin(!isLogin); setError(''); setMessage(''); }}
-          className="mt-6 text-sm text-text-secondary hover:text-white transition-colors"
+          className="mt-8 text-sm font-semibold text-orange-800/60 hover:text-orange-600 transition-colors"
         >
           {isLogin ? "Don't have an account? Register your team" : "Already registered? Sign in"}
         </button>

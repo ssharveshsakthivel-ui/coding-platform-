@@ -17,8 +17,8 @@ function Navbar({ session }: { session: Session | null }) {
     <nav className="glass-panel sticky top-0 z-50 border-b border-panel-border px-6 py-4 flex items-center justify-between">
       <Link to="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
         <Code2 className="text-primary" size={28} />
-        <span className="text-xl font-bold text-white">
-          GenCraft | <span className="bugbuster-glitch">BugBuster</span>
+        <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-purple-400">
+          GenCraft | BugBuster
         </span>
       </Link>
       <div className="flex items-center gap-6">
