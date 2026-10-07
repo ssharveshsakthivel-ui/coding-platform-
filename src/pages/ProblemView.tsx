@@ -20,24 +20,22 @@ export function ProblemView({ session }: { session?: any }) {
   const [tabSwitches, setTabSwitches] = useState(0);
 
   useEffect(() => {
-    const handleVisibilityChange = () => {
-      if (document.hidden) {
-        setTabSwitches(prev => {
-          const newCount = prev + 1;
-          if (newCount === 1) {
-            alert('⚠️ WARNING: Tab switching is strictly prohibited! Do not leave the page. Your next tab switch will automatically fail you and terminate the session.');
-          } else if (newCount >= 2) {
-            alert('❌ CHEATING DETECTED: You have switched tabs multiple times. Your session has been terminated.');
-            navigate('/');
-          }
-          return newCount;
-        });
-      }
+    const handleBlur = () => {
+      setTabSwitches(prev => {
+        const newCount = prev + 1;
+        if (newCount === 1) {
+          alert('⚠️ WARNING: You have clicked out of the window or switched tabs! This is strictly prohibited. Your next offense will automatically fail you and terminate the session.');
+        } else if (newCount >= 2) {
+          alert('❌ CHEATING DETECTED: You have left the window multiple times. Your session has been terminated.');
+          navigate('/');
+        }
+        return newCount;
+      });
     };
 
-    document.addEventListener('visibilitychange', handleVisibilityChange);
+    window.addEventListener('blur', handleBlur);
     return () => {
-      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      window.removeEventListener('blur', handleBlur);
     };
   }, [navigate]);
 
