@@ -6,8 +6,8 @@ export function Home() {
   return (
     <div className="max-w-5xl mx-auto w-full px-6 py-12 flex-1">
       <div className="mb-12 text-center">
-        <h1 className="text-4xl md:text-5xl font-extrabold mb-4 tracking-tight">
-          GENCRAFT <span className="text-primary">BUGBUSTER EVENT</span>
+        <h1 className="text-4xl md:text-6xl font-extrabold mb-4 tracking-tight text-white">
+          GENCRAFT <span className="bugbuster-glitch">BUGBUSTER</span>
         </h1>
         <p className="text-text-secondary text-lg max-w-2xl mx-auto">
           BugBuster Sub-Event — Scenario-Based Debugging Challenge. Select a scenario below and fix the bugs to pass the hidden test cases.

@@ -54,7 +54,9 @@ export function Auth() {
         <div className="w-16 h-16 bg-primary/20 rounded-full flex items-center justify-center mb-6">
           <Terminal className="text-primary" size={32} />
         </div>
-        <h1 className="text-2xl font-bold mb-2">GenCraft | BugBuster</h1>
+        <h1 className="text-3xl font-bold mb-2 text-white">
+          GenCraft | <span className="bugbuster-glitch">BugBuster</span>
+        </h1>
         <p className="text-text-secondary text-sm mb-8 text-center">
           {isLogin ? 'Sign in to access the event dashboard' : 'Register your team to participate'}
         </p>
