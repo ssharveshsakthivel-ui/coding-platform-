@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { problems } from '../data/problems';
 import { ChevronRight, Trophy, Code } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { Intro } from '../components/Intro';
 
 export function Home() {
@@ -9,10 +9,10 @@ export function Home() {
     return !sessionStorage.getItem('introPlayed');
   });
 
-  const handleIntroComplete = () => {
+  const handleIntroComplete = useCallback(() => {
     sessionStorage.setItem('introPlayed', 'true');
     setShowIntro(false);
-  };
+  }, []);
 
   return (
     <>

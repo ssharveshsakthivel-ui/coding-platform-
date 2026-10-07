@@ -70,7 +70,7 @@ export function Intro({ onComplete }: { onComplete: () => void }) {
 
   return (
     <div 
-      className="fixed inset-0 z-[100] bg-black flex flex-col items-center justify-center overflow-hidden transition-opacity duration-1000 ease-in-out"
+      className={`fixed inset-0 z-[100] bg-black flex flex-col items-center justify-center overflow-hidden transition-opacity duration-1000 ease-in-out ${opacity === 0 ? 'pointer-events-none' : ''}`}
       style={{ opacity }}
     >
       <canvas ref={canvasRef} className="absolute inset-0 z-0 opacity-40"></canvas>
