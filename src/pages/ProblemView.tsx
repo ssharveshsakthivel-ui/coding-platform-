@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { Editor } from '@monaco-editor/react';
 import { Play, Send } from 'lucide-react';
 import { problems } from '../data/problems';
@@ -15,6 +15,26 @@ export function ProblemView({ session }: { session?: any }) {
   const [output, setOutput] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isRunning, setIsRunning] = useState(false);
+  const [timeLeft, setTimeLeft] = useState(600);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (timeLeft <= 0) {
+      alert("Time's up! Returning to dashboard.");
+      navigate('/');
+      return;
+    }
+    const timer = setInterval(() => {
+      setTimeLeft(prev => prev - 1);
+    }, 1000);
+    return () => clearInterval(timer);
+  }, [timeLeft, navigate]);
+
+  const formatTime = (seconds: number) => {
+    const m = Math.floor(seconds / 60);
+    const s = seconds % 60;
+    return `${m}:${s.toString().padStart(2, '0')}`;
+  };
 
   useEffect(() => {
     if (problem && problem.buggyTemplates) {
@@ -120,6 +140,10 @@ export function ProblemView({ session }: { session?: any }) {
     
     if (allPassed) {
       setOutput(`🎉 ALL HIDDEN TESTS PASSED!\nScore: +${problem?.points} points\nStatus: Accepted\nYour solution has been recorded.\n\n` + outputText);
+      setTimeout(() => {
+        alert("Problem solved successfully! Moving to dashboard.");
+        navigate('/');
+      }, 2000);
     } else {
       setOutput(`❌ HIDDEN TESTS FAILED\nStatus: Wrong Answer\nScore: 0 points\nHint: Check edge cases and constraints.\n\n` + outputText);
     }
@@ -131,7 +155,12 @@ export function ProblemView({ session }: { session?: any }) {
     <div className="flex flex-1 h-[calc(100vh-73px)]">
       {/* Left Panel: Description */}
       <div className="w-1/2 p-6 overflow-y-auto border-r border-panel-border bg-bg-dark">
-        <h1 className="text-3xl font-bold mb-4">{problem.title}</h1>
+        <div className="flex justify-between items-start mb-4">
+          <h1 className="text-3xl font-bold">{problem.title}</h1>
+          <div className={`px-4 py-2 rounded-lg font-mono text-xl font-bold border ${timeLeft < 60 ? 'bg-danger/20 border-danger text-danger animate-pulse' : 'bg-panel-bg border-panel-border text-white'}`}>
+            {formatTime(timeLeft)}
+          </div>
+        </div>
         
         <div className="flex gap-4 mb-6 text-sm">
           <span className="px-3 py-1 bg-panel-border rounded-full font-medium">
