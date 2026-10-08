@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '../lib/supabase';
-import { Trophy, Medal, Search, User, Lock, KeyRound, CheckCircle, Plus } from 'lucide-react';
+import { Trophy, Medal, Search, User, Lock, KeyRound, CheckCircle, Plus, Activity } from 'lucide-react';
 import { problems } from '../data/problems';
 import { ADMIN_EMAIL } from '../config';
 
@@ -8,10 +8,12 @@ interface LeaderboardEntry {
   user_name: string;
   total_score: number;
   problems_solved: number;
+  solved_list: number[];
 }
 
 export function Dashboard({ session }: { session?: any }) {
   const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
+  const [activityFeed, setActivityFeed] = useState<any[]>([]);
   const [approvedTeams, setApprovedTeams] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(true);
   
@@ -47,35 +49,36 @@ export function Dashboard({ session }: { session?: any }) {
       const { data, error } = await supabase
         .from('submissions')
         .select('*')
-        .eq('status', 'Accepted');
+        .order('id', { ascending: false }); // order by id assuming newer submissions have higher ids, or just fetch all
 
       if (error && error.message !== 'Failed to fetch') throw error;
 
-      // Calculate leaderboard
+      // Filter out 999 for activity feed
+      const allSubmissions: any[] = data || [];
+      const activity = allSubmissions.filter(sub => sub.problem_id !== 999).slice(0, 50);
+
+      // Calculate leaderboard (only Accepted)
       const scores = new Map<string, { score: number; solved: Set<number> }>();
       const approved = new Set<string>();
 
-      // Dummy data if no connection or empty
-      const submissionsData: any[] = data && data.length > 0 ? data : [];
-
-      submissionsData.forEach((sub) => {
+      allSubmissions.forEach((sub) => {
         const name = sub.user_name || 'Anonymous';
         
-        // problem_id 999 means Round 3 Approved
-        if (sub.problem_id === 999) {
+        if (sub.problem_id === 999 && sub.status === 'Accepted') {
           approved.add(name);
           return;
         }
 
-        if (!scores.has(name)) {
-          scores.set(name, { score: 0, solved: new Set() });
-        }
-        
-        const userStats = scores.get(name)!;
-        // Only count unique problems solved
-        if (!userStats.solved.has(sub.problem_id)) {
-          userStats.solved.add(sub.problem_id);
-          userStats.score += sub.score || 0;
+        if (sub.status === 'Accepted') {
+          if (!scores.has(name)) {
+            scores.set(name, { score: 0, solved: new Set() });
+          }
+          
+          const userStats = scores.get(name)!;
+          if (!userStats.solved.has(sub.problem_id)) {
+            userStats.solved.add(sub.problem_id);
+            userStats.score += sub.score || 0;
+          }
         }
       });
 
@@ -83,12 +86,14 @@ export function Dashboard({ session }: { session?: any }) {
         user_name: name,
         total_score: stats.score,
         problems_solved: stats.solved.size,
+        solved_list: Array.from(stats.solved).sort((a, b) => a - b),
       }));
 
       // Sort by score descending
       board.sort((a, b) => b.total_score - a.total_score);
       setLeaderboard(board);
       setApprovedTeams(approved);
+      setActivityFeed(activity);
     } catch (error) {
       console.error('Error fetching leaderboard:', error);
     } finally {
@@ -218,16 +223,25 @@ export function Dashboard({ session }: { session?: any }) {
                     </div>
                   </td>
                   <td className="py-4 px-6">
-                    <div className="flex items-center gap-1.5">
-                      <div className="h-2 w-24 bg-panel-bg rounded-full overflow-hidden">
-                        <div 
-                          className="h-full bg-primary" 
-                          style={{ width: `${(entry.problems_solved / problems.length) * 100}%` }}
-                        />
+                    <div className="flex flex-col gap-2">
+                      <div className="flex items-center gap-1.5">
+                        <div className="h-2 w-24 bg-panel-bg rounded-full overflow-hidden">
+                          <div 
+                            className="h-full bg-primary" 
+                            style={{ width: `${(entry.problems_solved / problems.length) * 100}%` }}
+                          />
+                        </div>
+                        <span className="text-sm text-text-secondary ml-2">
+                          {entry.problems_solved} / {problems.length}
+                        </span>
                       </div>
-                      <span className="text-sm text-text-secondary ml-2">
-                        {entry.problems_solved} / {problems.length}
-                      </span>
+                      <div className="flex flex-wrap gap-1 mt-1">
+                        {entry.solved_list.map(pid => (
+                          <span key={pid} className="text-[10px] px-1.5 py-0.5 rounded bg-primary/20 text-primary font-mono border border-primary/20">
+                            {pid}
+                          </span>
+                        ))}
+                      </div>
                     </div>
                   </td>
                   <td className="py-4 px-6 text-right font-mono font-bold text-lg text-success">
@@ -252,6 +266,65 @@ export function Dashboard({ session }: { session?: any }) {
             )}
           </tbody>
         </table>
+      </div>
+
+      <div className="mt-12">
+        <h2 className="text-2xl font-bold mb-6 flex items-center gap-2 text-white">
+          <Activity className="text-primary" size={24} />
+          Live Activity Feed
+        </h2>
+        
+        <div className="glass-panel rounded-xl overflow-hidden border border-panel-border">
+          <table className="w-full text-left border-collapse">
+            <thead>
+              <tr className="bg-panel-bg border-b border-panel-border">
+                <th className="py-3 px-6 font-semibold text-text-secondary text-xs uppercase tracking-wider">Team</th>
+                <th className="py-3 px-6 font-semibold text-text-secondary text-xs uppercase tracking-wider">Problem</th>
+                <th className="py-3 px-6 font-semibold text-text-secondary text-xs uppercase tracking-wider">Language</th>
+                <th className="py-3 px-6 font-semibold text-text-secondary text-xs uppercase tracking-wider text-right">Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {loading ? (
+                <tr>
+                  <td colSpan={4} className="py-6 text-center text-text-secondary text-sm">
+                    Loading activity...
+                  </td>
+                </tr>
+              ) : activityFeed.length === 0 ? (
+                <tr>
+                  <td colSpan={4} className="py-6 text-center text-text-secondary text-sm">
+                    No recent activity.
+                  </td>
+                </tr>
+              ) : (
+                activityFeed.map((sub, idx) => (
+                  <tr key={sub.id || idx} className="border-b border-panel-border/50 hover:bg-white/5 transition-colors text-sm">
+                    <td className="py-3 px-6 font-medium text-white flex items-center gap-2">
+                      <User size={14} className="text-text-secondary" />
+                      {sub.user_name || 'Anonymous'}
+                    </td>
+                    <td className="py-3 px-6 font-mono text-primary/80">
+                      Problem {sub.problem_id}
+                    </td>
+                    <td className="py-3 px-6 text-text-secondary capitalize">
+                      {sub.language || 'Unknown'}
+                    </td>
+                    <td className="py-3 px-6 text-right">
+                      <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold ${
+                        sub.status === 'Accepted' 
+                          ? 'bg-success/20 text-success' 
+                          : 'bg-danger/20 text-danger'
+                      }`}>
+                        {sub.status}
+                      </span>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );
