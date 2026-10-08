@@ -75,7 +75,7 @@ export function ProblemView({ session }: { session?: any }) {
 
     try {
       const sample = problem?.publicSample[0];
-      const res = await fetch('http://localhost:3001/execute', {
+      const res = await fetch('https://coding-platform-fzpt.onrender.com/execute', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ language, code, input: sample?.input })
@@ -131,7 +131,7 @@ export function ProblemView({ session }: { session?: any }) {
     for (let i = 0; i < testCases.length; i++) {
       const tc = testCases[i];
       try {
-        const res = await fetch('http://localhost:3001/execute', {
+        const res = await fetch('https://coding-platform-fzpt.onrender.com/execute', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ language, code, input: tc.input })
