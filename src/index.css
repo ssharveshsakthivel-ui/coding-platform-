@@ -20,6 +20,7 @@ body {
   background-color: var(--bg-dark);
   color: var(--text-primary);
   -webkit-font-smoothing: antialiased;
+  overscroll-behavior: none;
 }
 
 /* Custom scrollbar */

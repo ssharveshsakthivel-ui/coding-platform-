@@ -46,7 +46,22 @@ export function ProblemView({ session }: { session?: any }) {
     return () => {
       document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
-  }, [navigate]);
+  }, [navigate, showAlert]);
+
+  // Anti-Cheat: Prevent Browser Back Button
+  useEffect(() => {
+    window.history.pushState(null, '', window.location.href);
+
+    const handlePopState = () => {
+      window.history.pushState(null, '', window.location.href);
+      showAlert('Action Blocked', 'Please use the buttons on the screen to navigate. Browser back button is disabled.', 'warning');
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    return () => {
+      window.removeEventListener('popstate', handlePopState);
+    };
+  }, [showAlert]);
 
   // Anti-Cheat: Fullscreen Exit Detection
   useEffect(() => {
