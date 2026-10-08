@@ -46,6 +46,34 @@ export function ProblemView({ session }: { session?: any }) {
     };
   }, [navigate]);
 
+  // Anti-Cheat: Fullscreen Exit Detection
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      setTimeout(() => {
+        // If there's no fullscreen element but we are still on this page
+        if (!document.fullscreenElement) {
+          const currentExits = parseInt(sessionStorage.getItem('fullscreenExits') || '0');
+          const newExits = currentExits + 1;
+          sessionStorage.setItem('fullscreenExits', newExits.toString());
+          
+          if (newExits === 1) {
+            alert('⚠️ WARNING: Exiting fullscreen is strictly prohibited! (1/2 warnings)');
+          } else if (newExits === 2) {
+            alert('⚠️ FINAL WARNING: If you exit fullscreen again, your session will be terminated. (2/2 warnings)');
+          } else if (newExits >= 3) {
+            alert('❌ CHEATING DETECTED: You have exited fullscreen multiple times. Your session has been terminated.');
+            navigate('/');
+          }
+        }
+      }, 100);
+    };
+
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+    return () => {
+      document.removeEventListener('fullscreenchange', handleFullscreenChange);
+    };
+  }, [navigate]);
+
   // Anti-Cheat: Disable Copy, Paste, Right-Click, and Drag-and-Drop
   useEffect(() => {
     const preventCheating = (e: Event) => {
@@ -308,12 +336,6 @@ export function ProblemView({ session }: { session?: any }) {
     }
   };
 
-  const handleExitFullscreen = () => {
-    if (document.fullscreenElement && document.exitFullscreen) {
-      document.exitFullscreen().catch(e => console.log(e));
-    }
-  };
-
   const currentIndex = problems.findIndex(p => p.id === problem?.id);
   const hasPrev = currentIndex > 0 && problems[currentIndex - 1].round === problem?.round;
 
@@ -324,14 +346,6 @@ export function ProblemView({ session }: { session?: any }) {
         <div className="flex justify-between items-start mb-4">
           <h1 className="text-3xl font-bold">{problem.title}</h1>
           <div className="flex gap-3">
-            <button
-              onClick={handleExitFullscreen}
-              className="px-3 py-2 rounded-lg bg-panel-bg border border-panel-border text-text-secondary hover:text-white transition-colors flex items-center gap-2 text-sm"
-              title="Exit Fullscreen"
-            >
-              <Minimize size={16} />
-              Exit Fullscreen
-            </button>
             <div className={`px-4 py-2 rounded-lg font-mono text-xl font-bold border ${timeLeft < 60 ? 'bg-danger/20 border-danger text-danger animate-pulse' : 'bg-panel-bg border-panel-border text-white'}`}>
               {formatTime(timeLeft)}
             </div>
