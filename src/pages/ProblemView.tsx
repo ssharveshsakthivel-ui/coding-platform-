@@ -66,6 +66,10 @@ export function ProblemView({ session }: { session?: any }) {
   }, [language, problem]);
 
   useEffect(() => {
+    setOutput('');
+  }, [problem?.id]);
+
+  useEffect(() => {
     // Log when user opens the problem, so admin can identify they've started the round
     const logStart = async () => {
       if (!problem) return;
@@ -210,6 +214,7 @@ export function ProblemView({ session }: { session?: any }) {
           alert("Problem solved successfully! Moving to next problem.");
           navigate(`/problem/${nextProblem.id}`);
         } else {
+          sessionStorage.removeItem('lockedRound');
           alert("Problem solved successfully! Round completed, returning to dashboard.");
           navigate('/');
         }
