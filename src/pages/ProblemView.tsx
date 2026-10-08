@@ -46,6 +46,28 @@ export function ProblemView({ session }: { session?: any }) {
     };
   }, [navigate]);
 
+  // Anti-Cheat: Disable Copy, Paste, Right-Click, and Drag-and-Drop
+  useEffect(() => {
+    const preventCheating = (e: Event) => {
+      e.preventDefault();
+    };
+
+    // Use capture phase to intercept before Monaco editor or other elements handle it
+    document.addEventListener('copy', preventCheating, true);
+    document.addEventListener('paste', preventCheating, true);
+    document.addEventListener('contextmenu', preventCheating, true);
+    document.addEventListener('dragstart', preventCheating, true);
+    document.addEventListener('drop', preventCheating, true);
+
+    return () => {
+      document.removeEventListener('copy', preventCheating, true);
+      document.removeEventListener('paste', preventCheating, true);
+      document.removeEventListener('contextmenu', preventCheating, true);
+      document.removeEventListener('dragstart', preventCheating, true);
+      document.removeEventListener('drop', preventCheating, true);
+    };
+  }, []);
+
   useEffect(() => {
     if (timeLeft <= 0) {
       // Record Time Expired
@@ -424,6 +446,8 @@ export function ProblemView({ session }: { session?: any }) {
               fontFamily: 'Menlo, Monaco, "Courier New", monospace',
               padding: { top: 16 },
               scrollBeyondLastLine: false,
+              contextmenu: false,
+              dragAndDrop: false,
             }}
           />
         </div>
