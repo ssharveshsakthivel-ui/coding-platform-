@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '../lib/supabase';
-import { Trophy, Medal, Search, User, Lock, CheckCircle, Plus, Activity } from 'lucide-react';
+import { Trophy, Medal, Search, User, Lock, CheckCircle, Plus, Activity, RotateCcw } from 'lucide-react';
 import { problems } from '../data/problems';
 import { ADMIN_EMAIL } from '../config';
 
@@ -9,6 +9,7 @@ interface LeaderboardEntry {
   total_score: number;
   problems_solved: number;
   solved_list: number[];
+  last_accepted: number;
 }
 
 export function Dashboard({ session }: { session?: any }) {
@@ -38,7 +39,7 @@ export function Dashboard({ session }: { session?: any }) {
       const activity = allSubmissions.filter(sub => sub.problem_id !== 999);
 
       // Calculate leaderboard (only Accepted)
-      const scores = new Map<string, { score: number; solved: Set<number> }>();
+      const scores = new Map<string, { score: number; solved: Set<number>, last_accepted: number }>();
       const approved = new Set<string>();
 
       allSubmissions.forEach((sub) => {
@@ -51,13 +52,18 @@ export function Dashboard({ session }: { session?: any }) {
 
         if (sub.status === 'Accepted') {
           if (!scores.has(name)) {
-            scores.set(name, { score: 0, solved: new Set() });
+            scores.set(name, { score: 0, solved: new Set(), last_accepted: 0 });
           }
           
           const userStats = scores.get(name)!;
           if (!userStats.solved.has(sub.problem_id)) {
             userStats.solved.add(sub.problem_id);
             userStats.score += sub.score || 0;
+            
+            const ts = new Date(sub.created_at || 0).getTime();
+            if (ts > userStats.last_accepted) {
+              userStats.last_accepted = ts;
+            }
           }
         }
       });
@@ -67,10 +73,16 @@ export function Dashboard({ session }: { session?: any }) {
         total_score: stats.score,
         problems_solved: stats.solved.size,
         solved_list: Array.from(stats.solved).sort((a, b) => a - b),
+        last_accepted: stats.last_accepted
       }));
 
-      // Sort by score descending
-      board.sort((a, b) => b.total_score - a.total_score);
+      // Sort by score descending, then by completion time (last_accepted) ascending
+      board.sort((a, b) => {
+        if (b.total_score !== a.total_score) {
+          return b.total_score - a.total_score;
+        }
+        return a.last_accepted - b.last_accepted;
+      });
       setLeaderboard(board);
       setApprovedTeams(approved);
       setActivityFeed(activity);
@@ -95,6 +107,20 @@ export function Dashboard({ session }: { session?: any }) {
     } catch (e) {
       console.error('Failed to approve:', e);
       alert('Failed to approve team. Make sure you are connected to Supabase.');
+    }
+  };
+
+  const resetLeaderboard = async () => {
+    if (window.confirm("Are you SURE you want to completely reset the leaderboard? This will permanently delete ALL teams, submissions, and activity logs. This cannot be undone.")) {
+      setLoading(true);
+      try {
+        await supabase.from('submissions').delete().gte('id', 0);
+        await fetchLeaderboard();
+      } catch (e) {
+        console.error('Failed to reset:', e);
+        alert('Failed to reset leaderboard.');
+        setLoading(false);
+      }
     }
   };
 
@@ -125,13 +151,22 @@ export function Dashboard({ session }: { session?: any }) {
           <p className="text-text-secondary">Live rankings for the GenCraft BugBuster Event</p>
         </div>
         
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-text-secondary" size={18} />
-          <input 
-            type="text" 
-            placeholder="Search team..." 
-            className="bg-panel-bg border border-panel-border text-white pl-10 pr-4 py-2 rounded-lg outline-none focus:border-primary text-sm w-64"
-          />
+        <div className="flex items-center gap-4">
+          <button
+            onClick={resetLeaderboard}
+            className="flex items-center gap-2 px-4 py-2 bg-danger/10 hover:bg-danger/20 text-danger rounded-lg transition-colors text-sm font-medium border border-danger/20"
+          >
+            <RotateCcw size={16} />
+            Reset Data
+          </button>
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-text-secondary" size={18} />
+            <input 
+              type="text" 
+              placeholder="Search team..." 
+              className="bg-panel-bg border border-panel-border text-white pl-10 pr-4 py-2 rounded-lg outline-none focus:border-primary text-sm w-64"
+            />
+          </div>
         </div>
       </div>
 
