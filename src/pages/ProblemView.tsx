@@ -4,6 +4,7 @@ import { Editor } from '@monaco-editor/react';
 import { Play, Send, SkipForward } from 'lucide-react';
 import { problems } from '../data/problems';
 import { supabase } from '../lib/supabase';
+import { useModal } from '../components/ModalProvider';
 
 
 
@@ -21,6 +22,7 @@ export function ProblemView({ session }: { session?: any }) {
     return problem?.round === 2 ? 300 : 600;
   });
   const navigate = useNavigate();
+  const { showAlert, showConfirm } = useModal();
   const [hasRunCode, setHasRunCode] = useState(false);
   const [, setTabSwitches] = useState(0);
 
@@ -30,9 +32,9 @@ export function ProblemView({ session }: { session?: any }) {
         setTabSwitches(prev => {
           const newCount = prev + 1;
           if (newCount === 1) {
-            alert('⚠️ WARNING: Tab switching is strictly prohibited! Do not leave the page. Your next tab switch will automatically fail you and terminate the session.');
+            showAlert('Warning', 'Tab switching is strictly prohibited! Do not leave the page. Your next tab switch will automatically fail you and terminate the session.', 'warning');
           } else if (newCount >= 2) {
-            alert('❌ CHEATING DETECTED: You have switched tabs multiple times. Your session has been terminated.');
+            showAlert('Cheating Detected', 'You have switched tabs multiple times. Your session has been terminated.', 'danger');
             navigate('/');
           }
           return newCount;
@@ -57,11 +59,11 @@ export function ProblemView({ session }: { session?: any }) {
           sessionStorage.setItem('fullscreenExits', newExits.toString());
           
           if (newExits === 1) {
-            alert('⚠️ WARNING: Exiting fullscreen is strictly prohibited! (1/2 warnings)');
+            showAlert('Warning', 'Exiting fullscreen is strictly prohibited! (1/2 warnings)', 'warning');
           } else if (newExits === 2) {
-            alert('⚠️ FINAL WARNING: If you exit fullscreen again, your session will be terminated. (2/2 warnings)');
+            showAlert('Final Warning', 'If you exit fullscreen again, your session will be terminated. (2/2 warnings)', 'danger');
           } else if (newExits >= 3) {
-            alert('❌ CHEATING DETECTED: You have exited fullscreen multiple times. Your session has been terminated.');
+            showAlert('Cheating Detected', 'You have exited fullscreen multiple times. Your session has been terminated.', 'danger');
             navigate('/');
           }
         }
@@ -115,7 +117,7 @@ export function ProblemView({ session }: { session?: any }) {
         }
       };
       logExpired().then(() => {
-        alert("Time's up! This problem is now locked.");
+        showAlert('Time Expired', 'Time\'s up! This problem is now locked.', 'info');
         navigate('/');
       });
       return;
@@ -149,7 +151,7 @@ export function ProblemView({ session }: { session?: any }) {
     // Check if time expired for the newly navigated problem
     const savedTime = sessionStorage.getItem(`timer_prob_${problem?.id}`);
     if (savedTime && parseInt(savedTime) <= 0) {
-      alert("This problem's time has already expired and is locked.");
+      showAlert('Locked', 'This problem\'s time has already expired and is locked.', 'warning');
       navigate('/');
       return;
     }
@@ -299,11 +301,11 @@ export function ProblemView({ session }: { session?: any }) {
         const nextProblem = problems[currentIndex + 1];
         
         if (nextProblem && nextProblem.round === problem?.round) {
-          alert("Problem solved successfully! Moving to next problem.");
+          showAlert('Success!', 'Problem solved successfully! Moving to next problem.', 'success');
           navigate(`/problem/${nextProblem.id}`);
         } else {
           sessionStorage.removeItem('lockedRound');
-          alert("Problem solved successfully! Round completed, returning to dashboard.");
+          showAlert('Success!', 'Problem solved successfully! Round completed, returning to dashboard.', 'success');
           navigate('/');
         }
       }, 2000);
@@ -315,18 +317,23 @@ export function ProblemView({ session }: { session?: any }) {
   };
 
   const handleNextProblem = () => {
-    if (window.confirm("Warning: You cannot revisit this problem if you move to the next one. Are you sure you want to skip?")) {
-      const currentIndex = problems.findIndex(p => p.id === problem?.id);
-      const nextProblem = problems[currentIndex + 1];
-      
-      if (nextProblem && nextProblem.round === problem?.round) {
-        navigate(`/problem/${nextProblem.id}`);
-      } else {
-        sessionStorage.removeItem('lockedRound');
-        alert("Round completed, returning to dashboard.");
-        navigate('/');
-      }
-    }
+    showConfirm(
+      "Skip Problem?",
+      "Warning: You cannot revisit this problem if you move to the next one. Are you sure you want to skip?",
+      () => {
+        const currentIndex = problems.findIndex(p => p.id === problem?.id);
+        const nextProblem = problems[currentIndex + 1];
+        
+        if (nextProblem && nextProblem.round === problem?.round) {
+          navigate(`/problem/${nextProblem.id}`);
+        } else {
+          sessionStorage.removeItem('lockedRound');
+          showAlert("Round Completed", "Returning to dashboard.", "info");
+          navigate('/');
+        }
+      },
+      "warning"
+    );
   };
 
 

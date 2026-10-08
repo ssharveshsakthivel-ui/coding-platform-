@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '../lib/supabase';
+import { useModal } from '../components/ModalProvider';
 import { Trophy, Medal, Search, User, Lock, CheckCircle, Plus, Activity, RotateCcw } from 'lucide-react';
 import { problems } from '../data/problems';
 import { ADMIN_EMAIL } from '../config';
@@ -20,6 +21,7 @@ export function Dashboard({ session }: { session?: any }) {
   
   // Check if current user matches admin email
   const isAdmin = session?.user?.email === ADMIN_EMAIL;
+  const { showAlert, showConfirm } = useModal();
 
   useEffect(() => {
     fetchLeaderboard();
@@ -106,22 +108,28 @@ export function Dashboard({ session }: { session?: any }) {
       setApprovedTeams(prev => new Set(prev).add(teamName));
     } catch (e) {
       console.error('Failed to approve:', e);
-      alert('Failed to approve team. Make sure you are connected to Supabase.');
+      showAlert('Error', 'Failed to approve team. Make sure you are connected to Supabase.', 'danger');
     }
   };
 
   const resetLeaderboard = async () => {
-    if (window.confirm("Are you SURE you want to completely reset the leaderboard? This will permanently delete ALL teams, submissions, and activity logs. This cannot be undone.")) {
-      setLoading(true);
-      try {
-        await supabase.from('submissions').delete().gte('id', 0);
-        await fetchLeaderboard();
-      } catch (e) {
-        console.error('Failed to reset:', e);
-        alert('Failed to reset leaderboard.');
-        setLoading(false);
-      }
-    }
+    showConfirm(
+      "Reset Leaderboard?",
+      "Are you SURE you want to completely reset the leaderboard? This will permanently delete ALL teams, submissions, and activity logs. This cannot be undone.",
+      async () => {
+        setLoading(true);
+        try {
+          await supabase.from('submissions').delete().gte('id', 0);
+          await fetchLeaderboard();
+          showAlert('Success', 'Leaderboard reset successfully.', 'success');
+        } catch (e) {
+          console.error('Failed to reset:', e);
+          showAlert('Error', 'Failed to reset leaderboard.', 'danger');
+          setLoading(false);
+        }
+      },
+      "danger"
+    );
   };
 
   if (!isAdmin) {

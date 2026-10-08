@@ -8,6 +8,7 @@ import { supabase } from './lib/supabase';
 import { Code2, Trophy, LogOut } from 'lucide-react';
 import type { Session } from '@supabase/supabase-js';
 import { ADMIN_EMAIL } from './config';
+import { ModalProvider } from './components/ModalProvider';
 
 function Navbar({ session }: { session: Session | null }) {
   const handleLogout = async () => {
@@ -71,27 +72,29 @@ function App() {
   }
 
   return (
-    <Router>
-      <div className="min-h-screen flex flex-col relative">
-        {session?.user?.user_metadata?.team_name && (
-          <div className="pointer-events-none fixed inset-0 z-0 flex items-center justify-center overflow-hidden opacity-[0.03] select-none">
-            <div className="text-[100px] md:text-[150px] lg:text-[200px] font-black text-white whitespace-nowrap -rotate-45">
-              {session.user.user_metadata.team_name}
+    <ModalProvider>
+      <Router>
+        <div className="min-h-screen flex flex-col relative">
+          {session?.user?.user_metadata?.team_name && (
+            <div className="pointer-events-none fixed inset-0 z-0 flex items-center justify-center overflow-hidden opacity-[0.03] select-none">
+              <div className="text-[100px] md:text-[150px] lg:text-[200px] font-black text-white whitespace-nowrap -rotate-45">
+                {session.user.user_metadata.team_name}
+              </div>
             </div>
+          )}
+          <div className="z-10 flex-1 flex flex-col relative">
+            <Navbar session={session} />
+            <main className="flex-1 flex flex-col">
+              <Routes>
+                <Route path="/" element={<Home session={session} />} />
+                <Route path="/problem/:id" element={<ProblemView session={session} />} />
+                <Route path="/dashboard" element={<Dashboard session={session} />} />
+              </Routes>
+            </main>
           </div>
-        )}
-        <div className="z-10 flex-1 flex flex-col relative">
-          <Navbar session={session} />
-          <main className="flex-1 flex flex-col">
-            <Routes>
-              <Route path="/" element={<Home session={session} />} />
-              <Route path="/problem/:id" element={<ProblemView session={session} />} />
-              <Route path="/dashboard" element={<Dashboard session={session} />} />
-            </Routes>
-          </main>
         </div>
-      </div>
-    </Router>
+      </Router>
+    </ModalProvider>
   );
 }
 
