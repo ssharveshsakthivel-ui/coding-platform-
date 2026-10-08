@@ -75,27 +75,13 @@ export function ProblemView({ session }: { session?: any }) {
 
     try {
       const sample = problem?.publicSample[0];
-      const PISTON_VERSIONS: Record<string, string> = { python: "3.10.0", java: "15.0.2" };
-      const res = await fetch('https://emkc.org/api/v2/piston/execute', {
+      const res = await fetch('http://localhost:3001/execute', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          language,
-          version: PISTON_VERSIONS[language] || "*",
-          files: [{ content: code }],
-          stdin: sample?.input || ""
-        })
+        body: JSON.stringify({ language, code, input: sample?.input })
       });
 
-      const pistonData = await res.json();
-      const compileError = pistonData.compile?.code !== 0 && pistonData.compile?.stderr ? pistonData.compile.stderr : null;
-      const runError = pistonData.run?.code !== 0 && pistonData.run?.stderr ? pistonData.run.stderr : null;
-      
-      const data = {
-        output: pistonData.run?.stdout || pistonData.run?.output || '',
-        error: compileError || runError || '',
-        exitCode: pistonData.run?.code || pistonData.compile?.code || 0
-      };
+      const data = await res.json();
 
       if (data.exitCode !== 0 || data.error) {
         setOutput(`Compilation/Execution Error ❌\n\n${data.error || data.output}`);
@@ -145,27 +131,13 @@ export function ProblemView({ session }: { session?: any }) {
     for (let i = 0; i < testCases.length; i++) {
       const tc = testCases[i];
       try {
-        const PISTON_VERSIONS: Record<string, string> = { python: "3.10.0", java: "15.0.2" };
-        const res = await fetch('https://emkc.org/api/v2/piston/execute', {
+        const res = await fetch('http://localhost:3001/execute', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            language,
-            version: PISTON_VERSIONS[language] || "*",
-            files: [{ content: code }],
-            stdin: tc.input || ""
-          })
+          body: JSON.stringify({ language, code, input: tc.input })
         });
 
-        const pistonData = await res.json();
-        const compileError = pistonData.compile?.code !== 0 && pistonData.compile?.stderr ? pistonData.compile.stderr : null;
-        const runError = pistonData.run?.code !== 0 && pistonData.run?.stderr ? pistonData.run.stderr : null;
-        
-        const data = {
-          output: pistonData.run?.stdout || pistonData.run?.output || '',
-          error: compileError || runError || '',
-          exitCode: pistonData.run?.code || pistonData.compile?.code || 0
-        };
+        const data = await res.json();
 
         if (data.exitCode !== 0 || data.error) {
           outputText += `Test Case ${i + 1}: Execution Error ❌\n${data.error || data.output}\n\n`;
