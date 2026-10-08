@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '../lib/supabase';
-import { Trophy, Medal, Search, User, Lock, KeyRound, CheckCircle, Plus, Activity } from 'lucide-react';
+import { Trophy, Medal, Search, User, Lock, CheckCircle, Plus, Activity } from 'lucide-react';
 import { problems } from '../data/problems';
 import { ADMIN_EMAIL } from '../config';
 
@@ -18,27 +18,7 @@ export function Dashboard({ session }: { session?: any }) {
   const [loading, setLoading] = useState(true);
   
   // Check if current user matches admin email
-  const isAutoAdmin = session?.user?.email === ADMIN_EMAIL;
-  const [isAdmin, setIsAdmin] = useState(isAutoAdmin);
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-
-  // Also update isAdmin if session changes
-  useEffect(() => {
-    if (session?.user?.email === ADMIN_EMAIL) {
-      setIsAdmin(true);
-    }
-  }, [session]);
-
-  const handleLogin = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (password === 'admin123') {
-      setIsAdmin(true);
-      setError('');
-    } else {
-      setError('Invalid admin password');
-    }
-  };
+  const isAdmin = session?.user?.email === ADMIN_EMAIL;
 
   useEffect(() => {
     fetchLeaderboard();
@@ -126,30 +106,9 @@ export function Dashboard({ session }: { session?: any }) {
             <Lock className="text-primary" size={32} />
           </div>
           <h1 className="text-2xl font-bold mb-2">Admin Access Required</h1>
-          <p className="text-text-secondary text-sm mb-8">
+          <p className="text-text-secondary text-sm">
             The leaderboard is restricted to event organizers only.
           </p>
-
-          <form onSubmit={handleLogin} className="w-full flex flex-col gap-4">
-            <div className="relative">
-              <KeyRound className="absolute left-3 top-1/2 -translate-y-1/2 text-text-secondary" size={18} />
-              <input 
-                type="password" 
-                placeholder="Enter admin password..." 
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full bg-panel-bg border border-panel-border text-white pl-10 pr-4 py-3 rounded-lg outline-none focus:border-primary text-sm transition-colors"
-              />
-            </div>
-            {error && <p className="text-danger text-sm text-left">{error}</p>}
-            <button 
-              type="submit"
-              className="w-full bg-primary hover:bg-primary-hover text-white font-medium py-3 rounded-lg transition-colors mt-2"
-            >
-              Access Leaderboard
-            </button>
-          </form>
-          <p className="text-xs text-text-secondary mt-6">Hint: Try 'admin123'</p>
         </div>
       </div>
     );
