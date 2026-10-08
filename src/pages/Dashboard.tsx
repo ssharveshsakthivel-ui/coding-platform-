@@ -271,59 +271,81 @@ export function Dashboard({ session }: { session?: any }) {
       <div className="mt-12">
         <h2 className="text-2xl font-bold mb-6 flex items-center gap-2 text-white">
           <Activity className="text-primary" size={24} />
-          Live Activity Feed
+          Registered Teams & Activity
         </h2>
         
-        <div className="glass-panel rounded-xl overflow-hidden border border-panel-border">
-          <table className="w-full text-left border-collapse">
-            <thead>
-              <tr className="bg-panel-bg border-b border-panel-border">
-                <th className="py-3 px-6 font-semibold text-text-secondary text-xs uppercase tracking-wider">Team</th>
-                <th className="py-3 px-6 font-semibold text-text-secondary text-xs uppercase tracking-wider">Problem</th>
-                <th className="py-3 px-6 font-semibold text-text-secondary text-xs uppercase tracking-wider">Language</th>
-                <th className="py-3 px-6 font-semibold text-text-secondary text-xs uppercase tracking-wider text-right">Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              {loading ? (
-                <tr>
-                  <td colSpan={4} className="py-6 text-center text-text-secondary text-sm">
-                    Loading activity...
-                  </td>
-                </tr>
-              ) : activityFeed.length === 0 ? (
-                <tr>
-                  <td colSpan={4} className="py-6 text-center text-text-secondary text-sm">
-                    No recent activity.
-                  </td>
-                </tr>
-              ) : (
-                activityFeed.map((sub, idx) => (
-                  <tr key={sub.id || idx} className="border-b border-panel-border/50 hover:bg-white/5 transition-colors text-sm">
-                    <td className="py-3 px-6 font-medium text-white flex items-center gap-2">
-                      <User size={14} className="text-text-secondary" />
-                      {sub.user_name || 'Anonymous'}
-                    </td>
-                    <td className="py-3 px-6 font-mono text-primary/80">
-                      Problem {sub.problem_id}
-                    </td>
-                    <td className="py-3 px-6 text-text-secondary capitalize">
-                      {sub.language || 'Unknown'}
-                    </td>
-                    <td className="py-3 px-6 text-right">
-                      <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold ${
-                        sub.status === 'Accepted' 
-                          ? 'bg-success/20 text-success' 
-                          : 'bg-danger/20 text-danger'
-                      }`}>
-                        {sub.status}
+        <div className="flex flex-col gap-4">
+          {loading ? (
+            <div className="text-center py-6 text-text-secondary text-sm">Loading teams...</div>
+          ) : activityFeed.length === 0 ? (
+            <div className="text-center py-6 text-text-secondary text-sm">No registered teams or activity.</div>
+          ) : (
+            (() => {
+              const teamsActivity = new Map<string, any[]>();
+              activityFeed.forEach(sub => {
+                const team = sub.user_name || 'Anonymous';
+                if (!teamsActivity.has(team)) teamsActivity.set(team, []);
+                teamsActivity.get(team)!.push(sub);
+              });
+
+              return Array.from(teamsActivity.entries()).map(([team, subs]) => (
+                <details key={team} className="glass-panel rounded-xl overflow-hidden border border-panel-border group">
+                  <summary className="flex items-center justify-between p-4 bg-panel-bg/50 cursor-pointer hover:bg-panel-bg transition-colors list-none">
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center text-primary">
+                        <User size={16} />
+                      </div>
+                      <span className="font-semibold text-white text-lg">{team}</span>
+                      <span className="text-xs text-text-secondary ml-2 px-2 py-1 bg-panel-bg rounded-md border border-panel-border">
+                        {subs.length} Activities
                       </span>
-                    </td>
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
+                    </div>
+                    <span className="text-primary group-open:rotate-180 transition-transform duration-300">▼</span>
+                  </summary>
+                  <div className="p-4 border-t border-panel-border bg-bg-dark/50">
+                    <table className="w-full text-left border-collapse">
+                      <thead>
+                        <tr className="text-text-secondary text-xs uppercase tracking-wider border-b border-panel-border/50">
+                          <th className="pb-2 font-medium">Action</th>
+                          <th className="pb-2 font-medium">Problem</th>
+                          <th className="pb-2 font-medium">Language</th>
+                          <th className="pb-2 font-medium text-right">Status</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {subs.map((sub, idx) => (
+                          <tr key={sub.id || idx} className="border-b border-panel-border/20 last:border-0 hover:bg-white/5 transition-colors text-sm">
+                            <td className="py-2.5 text-text-secondary">
+                              {sub.status === 'Registered' ? 'Signed Up' : sub.status === 'Testing (Run Code)' ? 'Run Code' : 'Submit'}
+                            </td>
+                            <td className="py-2.5 font-mono text-primary/80">
+                              {sub.problem_id === 0 ? '-' : `Problem ${sub.problem_id}`}
+                            </td>
+                            <td className="py-2.5 text-text-secondary capitalize">
+                              {sub.language || 'Unknown'}
+                            </td>
+                            <td className="py-2.5 text-right">
+                              <span className={`inline-flex items-center px-2 py-0.5 rounded text-[11px] font-semibold ${
+                                sub.status === 'Accepted' 
+                                  ? 'bg-success/20 text-success' 
+                                  : sub.status === 'Registered' 
+                                  ? 'bg-primary/20 text-primary'
+                                  : sub.status === 'Testing (Run Code)'
+                                  ? 'bg-warning/20 text-warning'
+                                  : 'bg-danger/20 text-danger'
+                              }`}>
+                                {sub.status}
+                              </span>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </details>
+              ));
+            })()
+          )}
         </div>
       </div>
     </div>

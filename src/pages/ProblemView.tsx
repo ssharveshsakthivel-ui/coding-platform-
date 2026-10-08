@@ -101,6 +101,19 @@ export function ProblemView({ session }: { session?: any }) {
       setOutput('Server error: Could not execute code. Make sure the execution server is running.');
     }
 
+    // Log the Run Code activity
+    const teamName = session?.user?.user_metadata?.team_name || 'Anonymous Team';
+    try {
+      await supabase.from('submissions').insert([{
+        user_name: teamName,
+        problem_id: parseInt(problem!.id),
+        code,
+        language,
+        status: 'Testing (Run Code)',
+        score: 0
+      }]);
+    } catch (e) {}
+
     setIsRunning(false);
   };
 

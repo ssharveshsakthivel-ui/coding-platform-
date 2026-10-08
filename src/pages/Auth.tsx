@@ -28,7 +28,7 @@ export function Auth() {
         if (!teamName.trim()) {
           throw new Error('Team name is required');
         }
-        const { error } = await supabase.auth.signUp({
+        const { data, error } = await supabase.auth.signUp({
           email,
           password,
           options: {
@@ -38,6 +38,21 @@ export function Auth() {
           }
         });
         if (error) throw error;
+        
+        // Log registration
+        try {
+          await supabase.from('submissions').insert([{
+            user_name: teamName,
+            problem_id: 0,
+            code: '',
+            language: 'system',
+            status: 'Registered',
+            score: 0
+          }]);
+        } catch (e) {
+          // Ignore
+        }
+
         setMessage('Registration successful! You can now log in.');
         setIsLogin(true);
       }
