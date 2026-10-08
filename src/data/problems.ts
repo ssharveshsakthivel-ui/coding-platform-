@@ -17,148 +17,165 @@ export interface Problem {
 export const problems: Problem[] = [
   {
     id: '201',
-    title: 'Add Two Numbers',
+    title: 'Student Marks Calculator',
     round: 2,
     difficulty: 'Easy',
     points: 10,
-    description: `Fix the compilation error so the program prints the correct sum of the two variables.`,
-    inputFormat: `No input required.`,
-    outputFormat: `Sum = 30`,
+    description: `Write a program that reads the marks of three subjects and calculates the total marks and average marks.`,
+    inputFormat: `Three integers representing marks`,
+    outputFormat: `Total = [total]\nAverage = [average]`,
     constraints: `None`,
-    publicSample: [{ input: ``, output: `Sum = 30` }],
-    hiddenTestCases: [{ input: ``, output: `Sum = 30`, buggyOutput: `Sum = 30` }],
+    publicSample: [{ input: `80 75 90`, output: `Total = 245\nAverage = 81.67` }],
+    hiddenTestCases: [
+      { input: `50 60 70`, output: `Total = 180\nAverage = 60.00`, buggyOutput: `Total = 180\nAverage = 60` },
+      { input: `95 88 92`, output: `Total = 275\nAverage = 91.67`, buggyOutput: `Total = 275\nAverage = 91` }
+    ],
     buggyTemplates: {
-      java: `public class Main {\n    public static void main(String[] args) {\n        int a = 10;\n        int b = 20;\n        int sum = a + b;\n\n        System.out.println("Sum = " + sm); // BUG\n    }\n}`,
-      python: `def solve():\n    a = 10\n    b = 20\n    sum_val = a + b\n    print("Sum = " + str(sm)) # BUG\n\nif __name__ == "__main__":\n    solve()`
+      cpp: `#include <iostream>\n#include <iomanip>\nusing namespace std;\n\nint main() {\n    int math, science, english\n    cin >> maths >> science >> english;\n\n    int total = math + science + English;\n    float average = total / 3;\n\n    cout << "Total = " << total << endl;\n    cout << fixed << setprecision(2);\n    cout << "Average = " << average << endl\n\n    return 0;\n}`
     },
     solutionCheck: {}
   },
   {
     id: '202',
-    title: 'Even or Odd',
+    title: 'Simple Calculator',
     round: 2,
     difficulty: 'Easy',
     points: 10,
-    description: `Fix the syntax error in the conditional statement to check if the number is even or odd.`,
-    inputFormat: `No input required.`,
-    outputFormat: `Odd`,
+    description: `Write a program that takes two integers and prints their sum, difference, and product.`,
+    inputFormat: `Two integers`,
+    outputFormat: `Sum = [sum]\nDifference = [diff]\nProduct = [prod]`,
     constraints: `None`,
-    publicSample: [{ input: ``, output: `Odd` }],
-    hiddenTestCases: [{ input: ``, output: `Odd`, buggyOutput: `Even` }],
+    publicSample: [{ input: `10 5`, output: `Sum = 15\nDifference = 5\nProduct = 50` }],
+    hiddenTestCases: [
+      { input: `7 3`, output: `Sum = 10\nDifference = 4\nProduct = 21`, buggyOutput: `Sum = 10\nDifference = 4\nProduct = 21` },
+      { input: `12 8`, output: `Sum = 20\nDifference = 4\nProduct = 96`, buggyOutput: `Sum = 20\nDifference = 4\nProduct = 96` }
+    ],
     buggyTemplates: {
-      java: `public class Main {\n    public static void main(String[] args) {\n        int n = 7;\n\n        if (n % 2 = 0) // BUG\n            System.out.println("Even");\n        else\n            System.out.println("Odd");\n    }\n}`,
-      python: `def solve():\n    n = 7\n    if n % 2 = 0: # BUG\n        print("Even")\n    else:\n        print("Odd")\n\nif __name__ == "__main__":\n    solve()`
+      cpp: `#include <iostream>\nusing namespace std;\n\nint main() {\n    int a, b;\n    cin >> a >> c;\n\n    int sum = a + b;\n    int difference = a - b\n    int product = a * B;\n\n    cout << "Sum = " << sum << endl;\n    cout << "Difference = " << difference << endl;\n    cout << "Product = " << product << endl;\n\n    return 0;\n}`
     },
     solutionCheck: {}
   },
   {
     id: '203',
-    title: 'Find the Largest Number',
+    title: 'Positive, Negative or Zero',
     round: 2,
     difficulty: 'Easy',
     points: 10,
-    description: `Fix the logical error so the program prints the largest of the two numbers.`,
-    inputFormat: `No input required.`,
-    outputFormat: `Largest = 25`,
+    description: `Write a program that reads an integer and determines whether the number is positive, negative, or zero.`,
+    inputFormat: `An integer`,
+    outputFormat: `Positive / Negative / Zero`,
     constraints: `None`,
-    publicSample: [{ input: ``, output: `Largest = 25` }],
-    hiddenTestCases: [{ input: ``, output: `Largest = 25`, buggyOutput: `Largest = 15` }],
+    publicSample: [{ input: `25`, output: `Positive` }],
+    hiddenTestCases: [
+      { input: `-10`, output: `Negative`, buggyOutput: `Negative` },
+      { input: `0`, output: `Zero`, buggyOutput: `Zero` }
+    ],
     buggyTemplates: {
-      java: `public class Main {\n    public static void main(String[] args) {\n        int a = 25;\n        int b = 15;\n\n        if (a < b) // BUG\n            System.out.println("Largest = " + a);\n        else\n            System.out.println("Largest = " + b);\n    }\n}`,
-      python: `def solve():\n    a = 25\n    b = 15\n    if a < b: # BUG\n        print(f"Largest = {a}")\n    else:\n        print(f"Largest = {b}")\n\nif __name__ == "__main__":\n    solve()`
+      cpp: `#include <iostream>\nusing namespace std;\n\nint main() {\n    int number\n    cin >> num;\n\n    if (number > 0) {\n        cout << "Positive" << endl;\n    }\n    else if (number < 0) {\n        cout << "Negative" << endl\n    }\n    else {\n        cout << "Zero";\n    }\n\n    return 0;\n}`
     },
     solutionCheck: {}
   },
   {
     id: '204',
-    title: 'Print Numbers 1 to 5',
+    title: 'Pattern Printing',
     round: 2,
     difficulty: 'Easy',
-    points: 10,
-    description: `Fix the loop condition so the program prints numbers from 1 up to 5 inclusive.`,
-    inputFormat: `No input required.`,
-    outputFormat: `1\n2\n3\n4\n5`,
-    constraints: `None`,
-    publicSample: [{ input: ``, output: `1\n2\n3\n4\n5` }],
-    hiddenTestCases: [{ input: ``, output: `1\n2\n3\n4\n5`, buggyOutput: `1\n2\n3\n4` }],
+    points: 15,
+    description: `Given an integer N, print the right-angled triangle pattern containing N rows.`,
+    inputFormat: `An integer N`,
+    outputFormat: `Pattern`,
+    constraints: `N >= 1`,
+    publicSample: [{ input: `3`, output: `*\n**\n***` }],
+    hiddenTestCases: [
+      { input: `4`, output: `*\n**\n***\n****`, buggyOutput: `*\n**\n***` },
+      { input: `5`, output: `*\n**\n***\n****\n*****`, buggyOutput: `*\n**\n***\n****` }
+    ],
     buggyTemplates: {
-      java: `public class Main {\n    public static void main(String[] args) {\n        for (int i = 1; i < 5; i++) { // BUG\n            System.out.println(i);\n        }\n    }\n}`,
-      python: `def solve():\n    for i in range(1, 5): # BUG\n        print(i)\n\nif __name__ == "__main__":\n    solve()`
+      cpp: `#include <iostream>\nusing namespace std;\n\nint main() {\n    int n;\n    cin >> n;\n\n    for (int i = 1; i <= n; i++) {\n        for (int j = 1; j < i; j++) {\n            cout << "*";\n        }\n        cout << endl;\n    }\n\n    return 0;\n}`
     },
     solutionCheck: {}
   },
   {
     id: '205',
-    title: 'Calculate Average',
+    title: 'Third Largest Element',
     round: 2,
-    difficulty: 'Easy-Medium',
+    difficulty: 'Medium',
     points: 15,
-    description: `Fix the operator precedence issue to correctly calculate the average of three numbers.`,
-    inputFormat: `No input required.`,
-    outputFormat: `Average = 20.0`,
-    constraints: `None`,
-    publicSample: [{ input: ``, output: `Average = 20.0` }],
-    hiddenTestCases: [{ input: ``, output: `Average = 20.0`, buggyOutput: `Average = 40.0` }],
+    description: `Given an array of integers, find and print the third largest distinct element in the array.`,
+    inputFormat: `N, followed by N integers`,
+    outputFormat: `Third largest element`,
+    constraints: `N >= 3`,
+    publicSample: [{ input: `6\n10 5 20 8 15 25`, output: `15` }],
+    hiddenTestCases: [
+      { input: `7\n12 45 7 23 19 50 31`, output: `31`, buggyOutput: `31` },
+      { input: `6\n10 20 20 5 30 15`, output: `15`, buggyOutput: `15` }
+    ],
     buggyTemplates: {
-      java: `public class Main {\n    public static void main(String[] args) {\n        int a = 10;\n        int b = 20;\n        int c = 30;\n\n        double average = a + b + c / 3; // BUG\n\n        System.out.println("Average = " + average);\n    }\n}`,
-      python: `def solve():\n    a = 10\n    b = 20\n    c = 30\n    average = a + b + c / 3 # BUG\n    print(f"Average = {average:.1f}")\n\nif __name__ == "__main__":\n    solve()`
+      cpp: `#include <iostream>\n#include <climits>\nusing namespace std;\n\nint main() {\n    int n;\n    cin >> n;\n\n    int arr[n];\n\n    for (int i = 0; i < n; i++) {\n        cin >> arr[i];\n    }\n\n    int largest = INT_MIN;\n    int secondLargest = INT_MIN;\n    int thirdLargest = INT_MIN;\n\n    for (int i = 0; i < n; i++) {\n        if (arr[i] > largest) {\n            largest = arr[i];\n        }\n        else if (arr[i] > secondLargest) {\n            secondLargest = arr[i];\n        }\n        else if (arr[i] > thirdLargest) {\n            thirdLargest = arr[i];\n        }\n    }\n\n    cout << thirdLargest << endl;\n\n    return 0;\n}`
     },
     solutionCheck: {}
   },
   {
     id: '206',
-    title: 'Reverse a Number',
+    title: 'Reverse a String Using Two Pointers',
     round: 2,
-    difficulty: 'Easy-Medium',
+    difficulty: 'Medium',
     points: 15,
-    description: `Fix the print statement so that it outputs the reversed number instead of 0.`,
-    inputFormat: `No input required.`,
-    outputFormat: `Reverse = 321`,
+    description: `Given a string, reverse it in-place using the two-pointer technique.`,
+    inputFormat: `A string`,
+    outputFormat: `Reversed string`,
     constraints: `None`,
-    publicSample: [{ input: ``, output: `Reverse = 321` }],
-    hiddenTestCases: [{ input: ``, output: `Reverse = 321`, buggyOutput: `Reverse = 0` }],
+    publicSample: [{ input: `HELLO`, output: `OLLEH` }],
+    hiddenTestCases: [
+      { input: `PROGRAM`, output: `MARGORP`, buggyOutput: `MARGORP` },
+      { input: `DEBUG`, output: `GUBED`, buggyOutput: `GUBED` }
+    ],
     buggyTemplates: {
-      java: `public class Main {\n    public static void main(String[] args) {\n        int n = 123;\n        int reverse = 0;\n\n        while (n > 0) {\n            int digit = n % 10;\n            reverse = reverse * 10 + digit;\n            n = n / 10;\n        }\n\n        System.out.println("Reverse = " + n); // BUG\n    }\n}`,
-      python: `def solve():\n    n = 123\n    reverse_num = 0\n    while n > 0:\n        digit = n % 10\n        reverse_num = reverse_num * 10 + digit\n        n = n // 10\n    print(f"Reverse = {n}") # BUG\n\nif __name__ == "__main__":\n    solve()`
+      cpp: `#include <iostream>\n#include <string>\nusing namespace std;\n\nint main() {\n    string str;\n    cin >> str;\n\n    int left = 0;\n    int right = str.length() - 1;\n\n    while (left < right) {\n        swap(str[left], str[right]);\n\n        left++;\n        right++;\n    }\n\n    cout << str << endl;\n\n    return 0;\n}`
     },
     solutionCheck: {}
   },
   {
     id: '207',
-    title: 'Array Sum',
+    title: 'Binary Search',
     round: 2,
-    difficulty: 'Easy-Medium',
-    points: 15,
-    description: `Fix the out of bounds error in the loop to compute the sum of the array.`,
-    inputFormat: `No input required.`,
-    outputFormat: `Sum = 100`,
-    constraints: `None`,
-    publicSample: [{ input: ``, output: `Sum = 100` }],
-    hiddenTestCases: [{ input: ``, output: `Sum = 100`, buggyOutput: `Error` }],
+    difficulty: 'Medium',
+    points: 20,
+    description: `Given a sorted array and a target value, use binary search to determine whether the target exists in the array. If the target is found, print its 0-based index. Otherwise, print -1.`,
+    inputFormat: `N\nN integers\nTarget`,
+    outputFormat: `Index or -1`,
+    constraints: `Array is sorted`,
+    publicSample: [{ input: `7\n2 5 8 12 16 23 38\n16`, output: `4` }],
+    hiddenTestCases: [
+      { input: `7\n2 5 8 12 16 23 38\n10`, output: `-1`, buggyOutput: `-1` },
+      { input: `7\n2 5 8 12 16 23 38\n2`, output: `0`, buggyOutput: `0` }
+    ],
     buggyTemplates: {
-      java: `public class Main {\n    public static void main(String[] args) {\n        int[] numbers = {10, 20, 30, 40};\n        int sum = 0;\n\n        for (int i = 0; i <= numbers.length; i++) { // BUG\n            sum = sum + numbers[i];\n        }\n\n        System.out.println("Sum = " + sum);\n    }\n}`,
-      python: `def solve():\n    numbers = [10, 20, 30, 40]\n    sum_val = 0\n    for i in range(len(numbers) + 1): # BUG\n        sum_val += numbers[i]\n    print(f"Sum = {sum_val}")\n\nif __name__ == "__main__":\n    solve()`
+      cpp: `#include <iostream>\nusing namespace std;\n\nint main() {\n    int n;\n    cin >> n;\n\n    int arr[n];\n\n    for (int i = 0; i < n; i++) {\n        cin >> arr[i];\n    }\n\n    int target;\n    cin >> target;\n\n    int low = 0;\n    int high = n - 1;\n\n    while (low <= high) {\n        int mid = (low + high) / 2;\n\n        if (arr[mid] == target) {\n            cout << mid << endl;\n            return 0;\n        }\n        else if (arr[mid] < target) {\n            high = mid - 1;\n        }\n        else {\n            low = mid + 1;\n        }\n    }\n\n    cout << -1 << endl;\n\n    return 0;\n}`
     },
     solutionCheck: {}
   },
   {
     id: '208',
-    title: 'Palindrome Number',
+    title: 'First Non-Repeating Character',
     round: 2,
     difficulty: 'Medium',
     points: 20,
-    description: `Fix the condition to properly verify if the original number is a palindrome.`,
-    inputFormat: `No input required.`,
-    outputFormat: `Palindrome`,
-    constraints: `None`,
-    publicSample: [{ input: ``, output: `Palindrome` }],
-    hiddenTestCases: [{ input: ``, output: `Palindrome`, buggyOutput: `Not Palindrome` }],
+    description: `Given a string containing lowercase English letters, find the first character that occurs exactly once. If every character occurs more than once, print -1.`,
+    inputFormat: `A string`,
+    outputFormat: `First non-repeating character or -1`,
+    constraints: `Lowercase letters only`,
+    publicSample: [{ input: `aabbcdde`, output: `c` }],
+    hiddenTestCases: [
+      { input: `swiss`, output: `w`, buggyOutput: `w` },
+      { input: `aabbcc`, output: `-1`, buggyOutput: `-1` }
+    ],
     buggyTemplates: {
-      java: `public class Main {\n    public static void main(String[] args) {\n        int n = 121;\n        int original = n;\n        int reverse = 0;\n\n        while (n > 0) {\n            int digit = n % 10;\n            reverse = reverse * 10 + digit;\n            n = n / 10;\n        }\n\n        if (original == n) // BUG\n            System.out.println("Palindrome");\n        else\n            System.out.println("Not Palindrome");\n    }\n}`,
-      python: `def solve():\n    n = 121\n    original = n\n    reverse_num = 0\n    while n > 0:\n        digit = n % 10\n        reverse_num = reverse_num * 10 + digit\n        n = n // 10\n    if original == n: # BUG\n        print("Palindrome")\n    else:\n        print("Not Palindrome")\n\nif __name__ == "__main__":\n    solve()`
+      cpp: `#include <iostream>\n#include <string>\nusing namespace std;\n\nint main() {\n    string str;\n    cin >> str;\n\n    int freq[26] = {0};\n\n    for (char ch : str) {\n        freq[ch - 'a']++;\n    }\n\n    for (char ch : str) {\n        if (freq[ch - 'a'] > 1) {\n            cout << ch << endl;\n            return 0;\n        }\n    }\n\n    cout << -1 << endl;\n\n    return 0;\n}`
     },
     solutionCheck: {}
-  },
+  }
+,
   {
     id: '301',
     title: 'Smart Water Tank Monitor',
