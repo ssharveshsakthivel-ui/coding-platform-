@@ -28,7 +28,7 @@ export function Auth() {
         if (!teamName.trim()) {
           throw new Error('Team name is required');
         }
-        const { data, error } = await supabase.auth.signUp({
+        const { error } = await supabase.auth.signUp({
           email,
           password,
           options: {

@@ -9,7 +9,6 @@ export function Home({ session }: { session?: any }) {
   const [showIntro, setShowIntro] = useState(() => {
     return !sessionStorage.getItem('introPlayed');
   });
-  const [solvedRound2, setSolvedRound2] = useState<number>(0);
   const [isApproved, setIsApproved] = useState<boolean>(false);
 
   const handleIntroComplete = useCallback(() => {
@@ -38,16 +37,6 @@ export function Home({ session }: { session?: any }) {
         if (solvedIds.has(999)) {
           setIsApproved(true);
         }
-
-        // Count how many round 2 problems are solved
-        let r2Count = 0;
-        const r2Problems = problems.filter(p => p.round === 2);
-        for (const p of r2Problems) {
-          if (solvedIds.has(parseInt(p.id))) {
-            r2Count++;
-          }
-        }
-        setSolvedRound2(r2Count);
       } catch (err) {
         console.error('Failed to fetch progress:', err);
       }
@@ -83,19 +72,14 @@ export function Home({ session }: { session?: any }) {
             </h2>
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
               {problems.filter(p => p.round === roundNum).map((problem) => {
-                const CardWrapper = isLocked ? 'div' : Link;
-                const props = isLocked ? {} : { to: `/problem/${problem.id}` };
+                const className = `glass-panel p-6 rounded-xl transition-all duration-300 group flex flex-col h-full ${
+                  isLocked 
+                    ? 'opacity-50 cursor-not-allowed border-panel-border' 
+                    : 'hover:border-primary hover:shadow-lg hover:shadow-primary/20 cursor-pointer'
+                }`;
 
-                return (
-                  <CardWrapper 
-                    key={problem.id} 
-                    {...props}
-                    className={`glass-panel p-6 rounded-xl transition-all duration-300 group flex flex-col h-full ${
-                      isLocked 
-                        ? 'opacity-50 cursor-not-allowed border-panel-border' 
-                        : 'hover:border-primary hover:shadow-lg hover:shadow-primary/20 cursor-pointer'
-                    }`}
-                  >
+                const content = (
+                  <>
                     <div className="flex justify-between items-start mb-4">
                       <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
                         problem.difficulty === 'Easy' ? 'bg-success/20 text-success' :
@@ -126,7 +110,17 @@ export function Home({ session }: { session?: any }) {
                       </div>
                       {!isLocked && <ChevronRight className="text-primary group-hover:translate-x-1 transition-transform" size={20} />}
                     </div>
-                  </CardWrapper>
+                  </>
+                );
+
+                if (isLocked) {
+                  return <div key={problem.id} className={className}>{content}</div>;
+                }
+                
+                return (
+                  <Link key={problem.id} to={`/problem/${problem.id}`} className={className}>
+                    {content}
+                  </Link>
                 );
               })}
             </div>
