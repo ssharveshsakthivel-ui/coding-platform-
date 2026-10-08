@@ -10,6 +10,7 @@ export function Home({ session }: { session?: any }) {
     return !sessionStorage.getItem('introPlayed');
   });
   const [isApproved, setIsApproved] = useState<boolean>(false);
+  const [solvedProblems, setSolvedProblems] = useState<Set<number>>(new Set());
   const [selectedRoundToEnter, setSelectedRoundToEnter] = useState<number | null>(null);
   const [showExitWarning, setShowExitWarning] = useState(false);
   
@@ -52,7 +53,8 @@ export function Home({ session }: { session?: any }) {
         if (error) throw error;
 
         // Get unique solved problem IDs
-        const solvedIds = new Set((data || []).map(sub => sub.problem_id));
+        const solvedIds = new Set<number>((data || []).map(sub => sub.problem_id));
+        setSolvedProblems(solvedIds);
         
         // Check for admin approval (problem_id 999)
         if (solvedIds.has(999)) {
@@ -133,7 +135,12 @@ export function Home({ session }: { session?: any }) {
           
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
             {problems.filter(p => p.round === activeRound).map((problem) => {
-              const className = "glass-panel p-6 rounded-xl transition-all duration-300 group flex flex-col h-full hover:border-primary hover:shadow-lg hover:shadow-primary/20 cursor-pointer";
+              const isSolved = solvedProblems.has(parseInt(problem.id));
+              const className = `glass-panel p-6 rounded-xl transition-all duration-300 group flex flex-col h-full ${
+                isSolved 
+                  ? 'opacity-60 cursor-not-allowed border-success/30 bg-success/5' 
+                  : 'hover:border-primary hover:shadow-lg hover:shadow-primary/20 cursor-pointer'
+              }`;
 
               const content = (
                 <>
@@ -152,7 +159,7 @@ export function Home({ session }: { session?: any }) {
                     </span>
                   </div>
                   
-                  <h2 className="text-xl font-bold mb-3 transition-colors group-hover:text-primary">
+                  <h2 className={`text-xl font-bold mb-3 transition-colors ${isSolved ? 'text-success' : 'group-hover:text-primary'}`}>
                     {problem.title}
                   </h2>
                   
@@ -162,13 +169,17 @@ export function Home({ session }: { session?: any }) {
                   
                   <div className="flex items-center justify-between mt-auto pt-4 border-t border-panel-border">
                     <div className="flex items-center gap-2 text-text-secondary text-xs">
-                      <Code size={14} />
-                      <span>Multiple Languages</span>
+                      {isSolved ? <Lock size={14} className="text-success" /> : <Code size={14} />}
+                      <span className={isSolved ? 'text-success font-medium' : ''}>{isSolved ? 'Solved' : 'Multiple Languages'}</span>
                     </div>
-                    <ChevronRight className="text-primary group-hover:translate-x-1 transition-transform" size={20} />
+                    {!isSolved && <ChevronRight className="text-primary group-hover:translate-x-1 transition-transform" size={20} />}
                   </div>
                 </>
               );
+
+              if (isSolved) {
+                return <div key={problem.id} className={className}>{content}</div>;
+              }
 
               return (
                 <Link key={problem.id} to={`/problem/${problem.id}`} className={className}>
