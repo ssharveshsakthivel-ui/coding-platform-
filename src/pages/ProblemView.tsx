@@ -314,7 +314,7 @@ export function ProblemView({ session }: { session?: any }) {
   return (
     <div className="flex flex-1 h-[calc(100vh-73px)]">
       {/* Left Panel: Description */}
-      <div className="w-1/2 p-6 overflow-y-auto border-r border-panel-border bg-bg-dark">
+      <div className="w-1/2 p-6 overflow-y-auto border-r border-panel-border bg-bg-dark select-none">
         <div className="flex justify-between items-start mb-4">
           <h1 className="text-3xl font-bold">{problem.title}</h1>
           <div className={`px-4 py-2 rounded-lg font-mono text-xl font-bold border ${timeLeft < 60 ? 'bg-danger/20 border-danger text-danger animate-pulse' : 'bg-panel-bg border-panel-border text-white'}`}>
