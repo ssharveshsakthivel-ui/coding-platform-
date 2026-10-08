@@ -1,4 +1,4 @@
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { problems } from '../data/problems';
 import { ChevronRight, Trophy, Code, Lock } from 'lucide-react';
 import { useState, useCallback, useEffect } from 'react';

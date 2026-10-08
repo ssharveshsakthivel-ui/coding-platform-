@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Editor } from '@monaco-editor/react';
-import { Play, Send, SkipForward, SkipBack, Minimize } from 'lucide-react';
+import { Play, Send, SkipForward } from 'lucide-react';
 import { problems } from '../data/problems';
 import { supabase } from '../lib/supabase';
 
@@ -329,7 +329,6 @@ export function ProblemView({ session }: { session?: any }) {
     }
   };
 
-  const currentIndex = problems.findIndex(p => p.id === problem?.id);
 
   return (
     <div className="flex flex-1 h-[calc(100vh-73px)]">
