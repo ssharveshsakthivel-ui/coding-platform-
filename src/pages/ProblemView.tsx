@@ -17,25 +17,27 @@ export function ProblemView({ session }: { session?: any }) {
   const [isRunning, setIsRunning] = useState(false);
   const [timeLeft, setTimeLeft] = useState(600);
   const navigate = useNavigate();
-  const [tabSwitches, setTabSwitches] = useState(0);
+  const [, setTabSwitches] = useState(0);
 
   useEffect(() => {
-    const handleBlur = () => {
-      setTabSwitches(prev => {
-        const newCount = prev + 1;
-        if (newCount === 1) {
-          alert('⚠️ WARNING: You have clicked out of the window or switched tabs! This is strictly prohibited. Your next offense will automatically fail you and terminate the session.');
-        } else if (newCount >= 2) {
-          alert('❌ CHEATING DETECTED: You have left the window multiple times. Your session has been terminated.');
-          navigate('/');
-        }
-        return newCount;
-      });
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        setTabSwitches(prev => {
+          const newCount = prev + 1;
+          if (newCount === 1) {
+            alert('⚠️ WARNING: Tab switching is strictly prohibited! Do not leave the page. Your next tab switch will automatically fail you and terminate the session.');
+          } else if (newCount >= 2) {
+            alert('❌ CHEATING DETECTED: You have switched tabs multiple times. Your session has been terminated.');
+            navigate('/');
+          }
+          return newCount;
+        });
+      }
     };
 
-    window.addEventListener('blur', handleBlur);
+    document.addEventListener('visibilitychange', handleVisibilityChange);
     return () => {
-      window.removeEventListener('blur', handleBlur);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
   }, [navigate]);
 
@@ -70,7 +72,7 @@ export function ProblemView({ session }: { session?: any }) {
   const handleRunCode = async () => {
     setIsRunning(true);
     setOutput('Compiling and running against public sample...');
-    
+
     try {
       const sample = problem?.publicSample[0];
       const res = await fetch('http://localhost:3001/execute', {
@@ -78,18 +80,18 @@ export function ProblemView({ session }: { session?: any }) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ language, code, input: sample?.input })
       });
-      
+
       const data = await res.json();
-      
+
       if (data.exitCode !== 0 || data.error) {
-         setOutput(`Compilation/Execution Error ❌\n\n${data.error || data.output}`);
-         setIsRunning(false);
-         return;
+        setOutput(`Compilation/Execution Error ❌\n\n${data.error || data.output}`);
+        setIsRunning(false);
+        return;
       }
-      
+
       const actualOutput = data.output.trim();
       const expectedOutput = sample?.output.trim();
-      
+
       if (actualOutput === expectedOutput) {
         setOutput(`Test Case 1: Passed ✅\nInput:\n${sample?.input}\nOutput:\n${actualOutput}`);
       } else {
@@ -98,21 +100,21 @@ export function ProblemView({ session }: { session?: any }) {
     } catch (e) {
       setOutput('Server error: Could not execute code. Make sure the execution server is running.');
     }
-    
+
     setIsRunning(false);
   };
 
   const handleSubmit = async () => {
     const teamName = session?.user?.user_metadata?.team_name || 'Anonymous Team';
-    
+
     setIsSubmitting(true);
     setOutput('Running against hidden test cases...');
-    
+
     let allPassed = true;
     let outputText = '';
-    
+
     const testCases = problem?.hiddenTestCases || [];
-    
+
     for (let i = 0; i < testCases.length; i++) {
       const tc = testCases[i];
       try {
@@ -121,18 +123,18 @@ export function ProblemView({ session }: { session?: any }) {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ language, code, input: tc.input })
         });
-        
+
         const data = await res.json();
-        
+
         if (data.exitCode !== 0 || data.error) {
-           outputText += `Test Case ${i + 1}: Execution Error ❌\n${data.error || data.output}\n\n`;
-           allPassed = false;
-           break; 
+          outputText += `Test Case ${i + 1}: Execution Error ❌\n${data.error || data.output}\n\n`;
+          allPassed = false;
+          break;
         }
-        
+
         const actualOutput = data.output.trim();
         const expectedOutput = tc.output.trim();
-        
+
         if (actualOutput === expectedOutput) {
           outputText += `Test Case ${i + 1}: Passed ✅\nInput:\n${tc.input}\nOutput:\n${actualOutput}\n\n`;
         } else {
@@ -144,13 +146,13 @@ export function ProblemView({ session }: { session?: any }) {
         allPassed = false;
       }
     }
-    
+
     // Save to Supabase
     try {
-      await supabase.from('submissions').insert([{ 
+      await supabase.from('submissions').insert([{
         user_name: teamName,
-        problem_id: parseInt(problem!.id), 
-        code, 
+        problem_id: parseInt(problem!.id),
+        code,
         language,
         status: allPassed ? 'Accepted' : 'Wrong Answer',
         score: allPassed ? problem!.points : 0
@@ -158,7 +160,7 @@ export function ProblemView({ session }: { session?: any }) {
     } catch (e) {
       // Ignore if Supabase fails
     }
-    
+
     if (allPassed) {
       setOutput(`🎉 ALL HIDDEN TESTS PASSED!\nScore: +${problem?.points} points\nStatus: Accepted\nYour solution has been recorded.\n\n` + outputText);
       setTimeout(() => {
@@ -168,7 +170,7 @@ export function ProblemView({ session }: { session?: any }) {
     } else {
       setOutput(`❌ HIDDEN TESTS FAILED\nStatus: Wrong Answer\nScore: 0 points\nHint: Check edge cases and constraints.\n\n` + outputText);
     }
-    
+
     setIsSubmitting(false);
   };
 
@@ -182,7 +184,7 @@ export function ProblemView({ session }: { session?: any }) {
             {formatTime(timeLeft)}
           </div>
         </div>
-        
+
         <div className="flex gap-4 mb-6 text-sm">
           <span className="px-3 py-1 bg-panel-border rounded-full font-medium">
             Difficulty: {problem.difficulty}
@@ -243,7 +245,7 @@ export function ProblemView({ session }: { session?: any }) {
       <div className="w-1/2 flex flex-col bg-bg-dark">
         <div className="flex items-center justify-between p-4 border-b border-panel-border gap-4">
           <div className="flex gap-4 items-center">
-            <select 
+            <select
               value={language}
               onChange={(e) => setLanguage(e.target.value)}
               className="bg-panel-bg border border-panel-border text-white px-3 py-1.5 rounded-lg outline-none focus:border-primary text-sm font-medium"
@@ -254,7 +256,7 @@ export function ProblemView({ session }: { session?: any }) {
           </div>
 
           <div className="flex gap-3">
-            <button 
+            <button
               onClick={handleRunCode}
               disabled={isRunning || isSubmitting}
               className="flex items-center gap-2 px-4 py-1.5 rounded-lg bg-panel-bg border border-panel-border hover:bg-slate-800 transition-colors text-sm font-medium disabled:opacity-50"
@@ -262,7 +264,7 @@ export function ProblemView({ session }: { session?: any }) {
               <Play size={16} className="text-success" />
               {isRunning ? 'Running...' : 'Run Code'}
             </button>
-            <button 
+            <button
               onClick={handleSubmit}
               disabled={isSubmitting || isRunning}
               className="flex items-center gap-2 px-4 py-1.5 rounded-lg bg-primary hover:bg-primary-hover text-white transition-colors text-sm font-medium disabled:opacity-50"
