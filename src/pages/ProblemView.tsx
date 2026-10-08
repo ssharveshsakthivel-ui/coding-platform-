@@ -15,7 +15,7 @@ export function ProblemView({ session }: { session?: any }) {
   const [output, setOutput] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isRunning, setIsRunning] = useState(false);
-  const [timeLeft, setTimeLeft] = useState(600);
+  const [timeLeft, setTimeLeft] = useState(() => problem?.round === 2 ? 300 : 600);
   const navigate = useNavigate();
   const [, setTabSwitches] = useState(0);
 
@@ -67,7 +67,8 @@ export function ProblemView({ session }: { session?: any }) {
 
   useEffect(() => {
     setOutput('');
-  }, [problem?.id]);
+    setTimeLeft(problem?.round === 2 ? 300 : 600);
+  }, [problem?.id, problem?.round]);
 
   useEffect(() => {
     // Log when user opens the problem, so admin can identify they've started the round
