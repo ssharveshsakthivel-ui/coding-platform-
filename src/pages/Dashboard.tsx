@@ -35,7 +35,7 @@ export function Dashboard({ session }: { session?: any }) {
 
       // Filter out 999 for activity feed
       const allSubmissions: any[] = data || [];
-      const activity = allSubmissions.filter(sub => sub.problem_id !== 999).slice(0, 50);
+      const activity = allSubmissions.filter(sub => sub.problem_id !== 999);
 
       // Calculate leaderboard (only Accepted)
       const scores = new Map<string, { score: number; solved: Set<number> }>();
