@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Editor } from '@monaco-editor/react';
-import { Play, Send } from 'lucide-react';
+import { Play, Send, SkipForward } from 'lucide-react';
 import { problems } from '../data/problems';
 import { supabase } from '../lib/supabase';
 
@@ -17,6 +17,7 @@ export function ProblemView({ session }: { session?: any }) {
   const [isRunning, setIsRunning] = useState(false);
   const [timeLeft, setTimeLeft] = useState(() => problem?.round === 2 ? 300 : 600);
   const navigate = useNavigate();
+  const [hasRunCode, setHasRunCode] = useState(false);
   const [, setTabSwitches] = useState(0);
 
   useEffect(() => {
@@ -67,6 +68,7 @@ export function ProblemView({ session }: { session?: any }) {
 
   useEffect(() => {
     setOutput('');
+    setHasRunCode(false);
     setTimeLeft(problem?.round === 2 ? 300 : 600);
   }, [problem?.id, problem?.round]);
 
@@ -102,6 +104,7 @@ export function ProblemView({ session }: { session?: any }) {
 
   const handleRunCode = async () => {
     setIsRunning(true);
+    setHasRunCode(true);
     setOutput('Compiling and running against public sample...');
 
     try {
@@ -227,6 +230,21 @@ export function ProblemView({ session }: { session?: any }) {
     setIsSubmitting(false);
   };
 
+  const handleNextProblem = () => {
+    if (window.confirm("Warning: You cannot revisit this problem if you move to the next one. Are you sure you want to skip?")) {
+      const currentIndex = problems.findIndex(p => p.id === problem?.id);
+      const nextProblem = problems[currentIndex + 1];
+      
+      if (nextProblem && nextProblem.round === problem?.round) {
+        navigate(`/problem/${nextProblem.id}`);
+      } else {
+        sessionStorage.removeItem('lockedRound');
+        alert("Round completed, returning to dashboard.");
+        navigate('/');
+      }
+    }
+  };
+
   return (
     <div className="flex flex-1 h-[calc(100vh-73px)]">
       {/* Left Panel: Description */}
@@ -325,6 +343,16 @@ export function ProblemView({ session }: { session?: any }) {
               <Send size={16} />
               {isSubmitting ? 'Submitting...' : 'Submit'}
             </button>
+            {hasRunCode && (
+              <button
+                onClick={handleNextProblem}
+                disabled={isSubmitting || isRunning}
+                className="flex items-center gap-2 px-4 py-1.5 rounded-lg bg-warning/20 hover:bg-warning/30 text-warning transition-colors text-sm font-medium disabled:opacity-50 border border-warning/30"
+              >
+                <SkipForward size={16} />
+                Next Problem
+              </button>
+            )}
           </div>
         </div>
 

@@ -47,17 +47,16 @@ export function Home({ session }: { session?: any }) {
         const { data, error } = await supabase
           .from('submissions')
           .select('problem_id')
-          .eq('user_name', teamName)
-          .eq('status', 'Accepted');
+          .eq('user_name', teamName);
 
         if (error) throw error;
 
-        // Get unique solved problem IDs
-        const solvedIds = new Set<number>((data || []).map(sub => sub.problem_id));
-        setSolvedProblems(solvedIds);
+        // Get unique visited problem IDs
+        const visitedIds = new Set<number>((data || []).map(sub => sub.problem_id));
+        setSolvedProblems(visitedIds);
         
         // Check for admin approval (problem_id 999)
-        if (solvedIds.has(999)) {
+        if (visitedIds.has(999)) {
           setIsApproved(true);
         }
       } catch (err) {
@@ -170,7 +169,7 @@ export function Home({ session }: { session?: any }) {
                   <div className="flex items-center justify-between mt-auto pt-4 border-t border-panel-border">
                     <div className="flex items-center gap-2 text-text-secondary text-xs">
                       {isSolved ? <Lock size={14} className="text-success" /> : <Code size={14} />}
-                      <span className={isSolved ? 'text-success font-medium' : ''}>{isSolved ? 'Solved' : 'Multiple Languages'}</span>
+                      <span className={isSolved ? 'text-success font-medium' : ''}>{isSolved ? 'Locked (Already Visited)' : 'Multiple Languages'}</span>
                     </div>
                     {!isSolved && <ChevronRight className="text-primary group-hover:translate-x-1 transition-transform" size={20} />}
                   </div>
