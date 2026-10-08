@@ -65,6 +65,32 @@ export function ProblemView({ session }: { session?: any }) {
     }
   }, [language, problem]);
 
+  useEffect(() => {
+    // Log when user opens the problem, so admin can identify they've started the round
+    const logStart = async () => {
+      if (!problem) return;
+      const teamName = session?.user?.user_metadata?.team_name;
+      if (!teamName) return;
+      
+      const sessionStorageKey = `started_prob_${problem.id}`;
+      if (!sessionStorage.getItem(sessionStorageKey)) {
+        try {
+          await supabase.from('submissions').insert([{
+            user_name: teamName,
+            problem_id: parseInt(problem.id),
+            code: '',
+            language: 'system',
+            status: `Started Round ${problem.round}`,
+            score: 0
+          }]);
+          sessionStorage.setItem(sessionStorageKey, 'true');
+        } catch (e) {}
+      }
+    };
+    
+    logStart();
+  }, [problem, session]);
+
   if (!problem) {
     return <div className="p-8 text-center text-xl text-danger">Problem not found</div>;
   }

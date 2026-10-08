@@ -275,7 +275,7 @@ export function Dashboard({ session }: { session?: any }) {
                         {subs.map((sub, idx) => (
                           <tr key={sub.id || idx} className="border-b border-panel-border/20 last:border-0 hover:bg-white/5 transition-colors text-sm">
                             <td className="py-2.5 text-text-secondary">
-                              {sub.status === 'Registered' ? 'Signed Up' : sub.status === 'Testing (Run Code)' ? 'Run Code' : 'Submit'}
+                              {sub.status === 'Registered' ? 'Signed Up' : sub.status === 'Testing (Run Code)' ? 'Run Code' : sub.status?.startsWith('Started') ? 'Opened Problem' : 'Submit'}
                             </td>
                             <td className="py-2.5 font-mono text-primary/80">
                               {sub.problem_id === 0 ? '-' : `Problem ${sub.problem_id}`}
@@ -289,6 +289,8 @@ export function Dashboard({ session }: { session?: any }) {
                                   ? 'bg-success/20 text-success' 
                                   : sub.status === 'Registered' 
                                   ? 'bg-primary/20 text-primary'
+                                  : sub.status?.startsWith('Started')
+                                  ? 'bg-purple-500/20 text-purple-400'
                                   : sub.status === 'Testing (Run Code)'
                                   ? 'bg-warning/20 text-warning'
                                   : 'bg-danger/20 text-danger'
