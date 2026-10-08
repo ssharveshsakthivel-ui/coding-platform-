@@ -16,7 +16,7 @@ export interface Problem {
 
 export const problems: Problem[] = [
   {
-    id: 'r2_1',
+    id: '201',
     title: 'Add Two Numbers',
     round: 2,
     difficulty: 'Easy',
@@ -34,7 +34,7 @@ export const problems: Problem[] = [
     solutionCheck: {}
   },
   {
-    id: 'r2_2',
+    id: '202',
     title: 'Even or Odd',
     round: 2,
     difficulty: 'Easy',
@@ -52,7 +52,7 @@ export const problems: Problem[] = [
     solutionCheck: {}
   },
   {
-    id: 'r2_3',
+    id: '203',
     title: 'Find the Largest Number',
     round: 2,
     difficulty: 'Easy',
@@ -70,7 +70,7 @@ export const problems: Problem[] = [
     solutionCheck: {}
   },
   {
-    id: 'r2_4',
+    id: '204',
     title: 'Print Numbers 1 to 5',
     round: 2,
     difficulty: 'Easy',
@@ -88,7 +88,7 @@ export const problems: Problem[] = [
     solutionCheck: {}
   },
   {
-    id: 'r2_5',
+    id: '205',
     title: 'Calculate Average',
     round: 2,
     difficulty: 'Easy-Medium',
@@ -106,7 +106,7 @@ export const problems: Problem[] = [
     solutionCheck: {}
   },
   {
-    id: 'r2_6',
+    id: '206',
     title: 'Reverse a Number',
     round: 2,
     difficulty: 'Easy-Medium',
@@ -124,7 +124,7 @@ export const problems: Problem[] = [
     solutionCheck: {}
   },
   {
-    id: 'r2_7',
+    id: '207',
     title: 'Array Sum',
     round: 2,
     difficulty: 'Easy-Medium',
@@ -142,7 +142,7 @@ export const problems: Problem[] = [
     solutionCheck: {}
   },
   {
-    id: 'r2_8',
+    id: '208',
     title: 'Palindrome Number',
     round: 2,
     difficulty: 'Medium',
@@ -160,7 +160,7 @@ export const problems: Problem[] = [
     solutionCheck: {}
   },
   {
-    id: '1',
+    id: '301',
     title: 'Smart Water Tank Monitor',
     round: 3,
     difficulty: 'Easy-Medium',
@@ -189,7 +189,7 @@ export const problems: Problem[] = [
     }
   },
   {
-    id: '2',
+    id: '302',
     title: 'Poultry Farm Bird Counter',
     round: 3,
     difficulty: 'Medium',
@@ -218,7 +218,7 @@ export const problems: Problem[] = [
     }
   },
   {
-    id: '3',
+    id: '303',
     title: 'Hospital IV Drip Alert',
     round: 3,
     difficulty: 'Medium-Hard',

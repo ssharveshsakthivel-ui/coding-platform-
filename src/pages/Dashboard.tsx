@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '../lib/supabase';
-import { Trophy, Medal, Search, User, Lock, KeyRound } from 'lucide-react';
+import { Trophy, Medal, Search, User, Lock, KeyRound, CheckCircle, Plus } from 'lucide-react';
 import { problems } from '../data/problems';
-
+import { ADMIN_EMAIL } from '../config';
 
 interface LeaderboardEntry {
   user_name: string;
@@ -10,12 +10,23 @@ interface LeaderboardEntry {
   problems_solved: number;
 }
 
-export function Dashboard() {
+export function Dashboard({ session }: { session?: any }) {
   const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
+  const [approvedTeams, setApprovedTeams] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(true);
-  const [isAdmin, setIsAdmin] = useState(false);
+  
+  // Check if current user matches admin email
+  const isAutoAdmin = session?.user?.email === ADMIN_EMAIL;
+  const [isAdmin, setIsAdmin] = useState(isAutoAdmin);
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+
+  // Also update isAdmin if session changes
+  useEffect(() => {
+    if (session?.user?.email === ADMIN_EMAIL) {
+      setIsAdmin(true);
+    }
+  }, [session]);
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
@@ -42,17 +53,20 @@ export function Dashboard() {
 
       // Calculate leaderboard
       const scores = new Map<string, { score: number; solved: Set<number> }>();
+      const approved = new Set<string>();
 
       // Dummy data if no connection or empty
-      const submissionsData: any[] = data && data.length > 0 ? data : [
-        { user_name: 'Alice', problem_id: 1, score: 30 },
-        { user_name: 'Alice', problem_id: 2, score: 35 },
-        { user_name: 'Bob', problem_id: 1, score: 30 },
-        { user_name: 'Charlie', problem_id: 3, score: 35 },
-      ];
+      const submissionsData: any[] = data && data.length > 0 ? data : [];
 
       submissionsData.forEach((sub) => {
         const name = sub.user_name || 'Anonymous';
+        
+        // problem_id 999 means Round 3 Approved
+        if (sub.problem_id === 999) {
+          approved.add(name);
+          return;
+        }
+
         if (!scores.has(name)) {
           scores.set(name, { score: 0, solved: new Set() });
         }
@@ -74,10 +88,28 @@ export function Dashboard() {
       // Sort by score descending
       board.sort((a, b) => b.total_score - a.total_score);
       setLeaderboard(board);
+      setApprovedTeams(approved);
     } catch (error) {
       console.error('Error fetching leaderboard:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const approveRound3 = async (teamName: string) => {
+    try {
+      await supabase.from('submissions').insert([{
+        user_name: teamName,
+        problem_id: 999,
+        code: 'APPROVED',
+        language: 'system',
+        status: 'Accepted',
+        score: 0
+      }]);
+      setApprovedTeams(prev => new Set(prev).add(teamName));
+    } catch (e) {
+      console.error('Failed to approve:', e);
+      alert('Failed to approve team. Make sure you are connected to Supabase.');
     }
   };
 
@@ -147,18 +179,19 @@ export function Dashboard() {
               <th className="py-4 px-6 font-semibold text-text-secondary text-sm">Team Name</th>
               <th className="py-4 px-6 font-semibold text-text-secondary text-sm">Problems Solved</th>
               <th className="py-4 px-6 font-semibold text-text-secondary text-sm text-right">Total Score</th>
+              <th className="py-4 px-6 font-semibold text-text-secondary text-sm text-center">Round 3</th>
             </tr>
           </thead>
           <tbody>
             {loading ? (
               <tr>
-                <td colSpan={4} className="py-8 text-center text-text-secondary">
+                <td colSpan={5} className="py-8 text-center text-text-secondary">
                   Loading leaderboard...
                 </td>
               </tr>
             ) : leaderboard.length === 0 ? (
               <tr>
-                <td colSpan={4} className="py-8 text-center text-text-secondary">
+                <td colSpan={5} className="py-8 text-center text-text-secondary">
                   No submissions yet. Be the first to solve!
                 </td>
               </tr>
@@ -199,6 +232,20 @@ export function Dashboard() {
                   </td>
                   <td className="py-4 px-6 text-right font-mono font-bold text-lg text-success">
                     {entry.total_score}
+                  </td>
+                  <td className="py-4 px-6 text-center">
+                    {approvedTeams.has(entry.user_name) ? (
+                      <span className="inline-flex items-center gap-1 text-xs font-medium text-success bg-success/10 px-2.5 py-1 rounded-full">
+                        <CheckCircle size={14} /> Approved
+                      </span>
+                    ) : (
+                      <button
+                        onClick={() => approveRound3(entry.user_name)}
+                        className="inline-flex items-center gap-1 text-xs font-medium text-white bg-primary hover:bg-primary-hover px-2.5 py-1 rounded-full transition-colors"
+                      >
+                        <Plus size={14} /> Approve
+                      </button>
+                    )}
                   </td>
                 </tr>
               ))

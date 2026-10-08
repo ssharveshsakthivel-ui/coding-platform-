@@ -7,6 +7,7 @@ import { Auth } from './pages/Auth';
 import { supabase } from './lib/supabase';
 import { Code2, Trophy, LogOut } from 'lucide-react';
 import type { Session } from '@supabase/supabase-js';
+import { ADMIN_EMAIL } from './config';
 
 function Navbar({ session }: { session: Session | null }) {
   const handleLogout = async () => {
@@ -22,10 +23,12 @@ function Navbar({ session }: { session: Session | null }) {
         </span>
       </Link>
       <div className="flex items-center gap-6">
-        <Link to="/dashboard" className="flex items-center gap-2 text-text-secondary hover:text-white transition-colors text-sm font-medium">
-          <Trophy size={16} />
-          Leaderboard
-        </Link>
+        {session?.user?.email === ADMIN_EMAIL && (
+          <Link to="/dashboard" className="flex items-center gap-2 text-text-secondary hover:text-white transition-colors text-sm font-medium">
+            <Trophy size={16} />
+            Leaderboard & Admin
+          </Link>
+        )}
         {session ? (
           <button 
             onClick={handleLogout}
@@ -73,9 +76,9 @@ function App() {
         <Navbar session={session} />
         <main className="flex-1 flex flex-col">
           <Routes>
-            <Route path="/" element={<Home />} />
+            <Route path="/" element={<Home session={session} />} />
             <Route path="/problem/:id" element={<ProblemView session={session} />} />
-            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/dashboard" element={<Dashboard session={session} />} />
           </Routes>
         </main>
       </div>

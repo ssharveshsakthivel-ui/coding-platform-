@@ -164,8 +164,16 @@ export function ProblemView({ session }: { session?: any }) {
     if (allPassed) {
       setOutput(`🎉 ALL HIDDEN TESTS PASSED!\nScore: +${problem?.points} points\nStatus: Accepted\nYour solution has been recorded.\n\n` + outputText);
       setTimeout(() => {
-        alert("Problem solved successfully! Moving to dashboard.");
-        navigate('/');
+        const currentIndex = problems.findIndex(p => p.id === problem?.id);
+        const nextProblem = problems[currentIndex + 1];
+        
+        if (nextProblem && nextProblem.round === problem?.round) {
+          alert("Problem solved successfully! Moving to next problem.");
+          navigate(`/problem/${nextProblem.id}`);
+        } else {
+          alert("Problem solved successfully! Round completed, returning to dashboard.");
+          navigate('/');
+        }
       }, 2000);
     } else {
       setOutput(`❌ HIDDEN TESTS FAILED\nStatus: Wrong Answer\nScore: 0 points\nHint: Check edge cases and constraints.\n\n` + outputText);
