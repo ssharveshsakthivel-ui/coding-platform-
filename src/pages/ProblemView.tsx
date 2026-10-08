@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Editor } from '@monaco-editor/react';
-import { Play, Send, SkipForward } from 'lucide-react';
+import { Play, Send, SkipForward, SkipBack } from 'lucide-react';
 import { problems } from '../data/problems';
 import { supabase } from '../lib/supabase';
 
@@ -15,7 +15,11 @@ export function ProblemView({ session }: { session?: any }) {
   const [output, setOutput] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isRunning, setIsRunning] = useState(false);
-  const [timeLeft, setTimeLeft] = useState(() => problem?.round === 2 ? 300 : 600);
+  const [timeLeft, setTimeLeft] = useState(() => {
+    const savedTime = sessionStorage.getItem(`timer_prob_${problem?.id}`);
+    if (savedTime) return parseInt(savedTime);
+    return problem?.round === 2 ? 300 : 600;
+  });
   const navigate = useNavigate();
   const [hasRunCode, setHasRunCode] = useState(false);
   const [, setTabSwitches] = useState(0);
@@ -44,15 +48,37 @@ export function ProblemView({ session }: { session?: any }) {
 
   useEffect(() => {
     if (timeLeft <= 0) {
-      alert("Time's up! Returning to dashboard.");
-      navigate('/');
+      // Record Time Expired
+      const logExpired = async () => {
+        const teamName = session?.user?.user_metadata?.team_name;
+        if (teamName && problem) {
+          try {
+            await supabase.from('submissions').insert([{
+              user_name: teamName,
+              problem_id: parseInt(problem.id),
+              code: '',
+              language: 'system',
+              status: 'Time Expired',
+              score: 0
+            }]);
+          } catch (e) {}
+        }
+      };
+      logExpired().then(() => {
+        alert("Time's up! This problem is now locked.");
+        navigate('/');
+      });
       return;
     }
     const timer = setInterval(() => {
-      setTimeLeft(prev => prev - 1);
+      setTimeLeft(prev => {
+        const next = prev - 1;
+        sessionStorage.setItem(`timer_prob_${problem?.id}`, next.toString());
+        return next;
+      });
     }, 1000);
     return () => clearInterval(timer);
-  }, [timeLeft, navigate]);
+  }, [timeLeft, navigate, problem, session]);
 
   const formatTime = (seconds: number) => {
     const m = Math.floor(seconds / 60);
@@ -69,8 +95,16 @@ export function ProblemView({ session }: { session?: any }) {
   useEffect(() => {
     setOutput('');
     setHasRunCode(false);
-    setTimeLeft(problem?.round === 2 ? 300 : 600);
-  }, [problem?.id, problem?.round]);
+    
+    // Check if time expired for the newly navigated problem
+    const savedTime = sessionStorage.getItem(`timer_prob_${problem?.id}`);
+    if (savedTime && parseInt(savedTime) <= 0) {
+      alert("This problem's time has already expired and is locked.");
+      navigate('/');
+      return;
+    }
+    setTimeLeft(savedTime ? parseInt(savedTime) : (problem?.round === 2 ? 300 : 600));
+  }, [problem?.id, problem?.round, navigate]);
 
   useEffect(() => {
     // Log when user opens the problem, so admin can identify they've started the round
@@ -231,19 +265,29 @@ export function ProblemView({ session }: { session?: any }) {
   };
 
   const handleNextProblem = () => {
-    if (window.confirm("Warning: You cannot revisit this problem if you move to the next one. Are you sure you want to skip?")) {
-      const currentIndex = problems.findIndex(p => p.id === problem?.id);
-      const nextProblem = problems[currentIndex + 1];
-      
-      if (nextProblem && nextProblem.round === problem?.round) {
-        navigate(`/problem/${nextProblem.id}`);
-      } else {
-        sessionStorage.removeItem('lockedRound');
-        alert("Round completed, returning to dashboard.");
-        navigate('/');
-      }
+    const currentIndex = problems.findIndex(p => p.id === problem?.id);
+    const nextProblem = problems[currentIndex + 1];
+    
+    if (nextProblem && nextProblem.round === problem?.round) {
+      navigate(`/problem/${nextProblem.id}`);
+    } else {
+      sessionStorage.removeItem('lockedRound');
+      alert("Round completed, returning to dashboard.");
+      navigate('/');
     }
   };
+
+  const handlePrevProblem = () => {
+    const currentIndex = problems.findIndex(p => p.id === problem?.id);
+    const prevProblem = problems[currentIndex - 1];
+    
+    if (prevProblem && prevProblem.round === problem?.round) {
+      navigate(`/problem/${prevProblem.id}`);
+    }
+  };
+
+  const currentIndex = problems.findIndex(p => p.id === problem?.id);
+  const hasPrev = currentIndex > 0 && problems[currentIndex - 1].round === problem?.round;
 
   return (
     <div className="flex flex-1 h-[calc(100vh-73px)]">
@@ -343,14 +387,24 @@ export function ProblemView({ session }: { session?: any }) {
               <Send size={16} />
               {isSubmitting ? 'Submitting...' : 'Submit'}
             </button>
+            {hasPrev && (
+              <button
+                onClick={handlePrevProblem}
+                disabled={isSubmitting || isRunning}
+                className="flex items-center gap-2 px-4 py-1.5 rounded-lg bg-panel-bg border border-panel-border hover:bg-slate-800 transition-colors text-sm font-medium disabled:opacity-50"
+              >
+                <SkipBack size={16} />
+                Prev
+              </button>
+            )}
             {hasRunCode && (
               <button
                 onClick={handleNextProblem}
                 disabled={isSubmitting || isRunning}
                 className="flex items-center gap-2 px-4 py-1.5 rounded-lg bg-warning/20 hover:bg-warning/30 text-warning transition-colors text-sm font-medium disabled:opacity-50 border border-warning/30"
               >
+                Next
                 <SkipForward size={16} />
-                Next Problem
               </button>
             )}
           </div>
