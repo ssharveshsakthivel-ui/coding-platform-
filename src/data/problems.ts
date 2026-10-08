@@ -31,7 +31,9 @@ export const problems: Problem[] = [
       { input: `95 88 92`, output: `Total = 275\nAverage = 91.67`, buggyOutput: `Total = 275\nAverage = 91` }
     ],
     buggyTemplates: {
-      cpp: `#include <iostream>\n#include <iomanip>\nusing namespace std;\n\nint main() {\n    int math, science, english\n    cin >> maths >> science >> english;\n\n    int total = math + science + English;\n    float average = total / 3;\n\n    cout << "Total = " << total << endl;\n    cout << fixed << setprecision(2);\n    cout << "Average = " << average << endl\n\n    return 0;\n}`
+      cpp: `#include <iostream>\n#include <iomanip>\nusing namespace std;\n\nint main() {\n    int math, science, english\n    cin >> maths >> science >> english;\n\n    int total = math + science + English;\n    float average = total / 3;\n\n    cout << "Total = " << total << endl;\n    cout << fixed << setprecision(2);\n    cout << "Average = " << average << endl\n\n    return 0;\n}`,
+      java: "import java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        int math, science, english\n        math = sc.nextInt();\n        science = sc.nextInt();\n        english = sc.nextInt();\n\n        int total = math + science + English;\n        float average = total / 3;\n\n        System.out.println(\"Total = \" + total);\n        System.out.printf(\"Average = %.2f\\n\", average)\n    }\n}",
+      python: "def main():\n    math, science, english = map(int, input().split())\n    \n    total = math + science + English\n    average = total / 3\n    \n    print(f\"Total = {total}\")\n    print(f\"Average = {average:.2f}\")\n\nif __name__ == \"__main__\":\n    main()"
     },
     solutionCheck: {}
   },
@@ -51,7 +53,9 @@ export const problems: Problem[] = [
       { input: `12 8`, output: `Sum = 20\nDifference = 4\nProduct = 96`, buggyOutput: `Sum = 20\nDifference = 4\nProduct = 96` }
     ],
     buggyTemplates: {
-      cpp: `#include <iostream>\nusing namespace std;\n\nint main() {\n    int a, b;\n    cin >> a >> c;\n\n    int sum = a + b;\n    int difference = a - b\n    int product = a * B;\n\n    cout << "Sum = " << sum << endl;\n    cout << "Difference = " << difference << endl;\n    cout << "Product = " << product << endl;\n\n    return 0;\n}`
+      cpp: `#include <iostream>\nusing namespace std;\n\nint main() {\n    int a, b;\n    cin >> a >> c;\n\n    int sum = a + b;\n    int difference = a - b\n    int product = a * B;\n\n    cout << "Sum = " << sum << endl;\n    cout << "Difference = " << difference << endl;\n    cout << "Product = " << product << endl;\n\n    return 0;\n}`,
+      java: "import java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        int a = sc.nextInt();\n        int b = sc.nextInt();\n\n        int sum = a + b;\n        int difference = a - b\n        int product = a * B;\n\n        System.out.println(\"Sum = \" + sum);\n        System.out.println(\"Difference = \" + difference);\n        System.out.println(\"Product = \" + product);\n    }\n}",
+      python: "def main():\n    a, b = map(int, input().split())\n    \n    sum_val = a + b\n    difference = a - b\n    product = a * B\n    \n    print(f\"Sum = {sum_val}\")\n    print(f\"Difference = {difference}\")\n    print(f\"Product = {product}\")\n\nif __name__ == \"__main__\":\n    main()"
     },
     solutionCheck: {}
   },
@@ -71,7 +75,9 @@ export const problems: Problem[] = [
       { input: `0`, output: `Zero`, buggyOutput: `Zero` }
     ],
     buggyTemplates: {
-      cpp: `#include <iostream>\nusing namespace std;\n\nint main() {\n    int number\n    cin >> num;\n\n    if (number > 0) {\n        cout << "Positive" << endl;\n    }\n    else if (number < 0) {\n        cout << "Negative" << endl\n    }\n    else {\n        cout << "Zero";\n    }\n\n    return 0;\n}`
+      cpp: `#include <iostream>\nusing namespace std;\n\nint main() {\n    int number\n    cin >> num;\n\n    if (number > 0) {\n        cout << "Positive" << endl;\n    }\n    else if (number < 0) {\n        cout << "Negative" << endl\n    }\n    else {\n        cout << "Zero";\n    }\n\n    return 0;\n}`,
+      java: "import java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        int number\n        int num = sc.nextInt();\n\n        if (number > 0) {\n            System.out.println(\"Positive\");\n        }\n        else if (number < 0) {\n            System.out.println(\"Negative\")\n        }\n        else {\n            System.out.print(\"Zero\");\n        }\n    }\n}",
+      python: "def main():\n    num = int(input())\n    \n    if number > 0:\n        print(\"Positive\")\n    elif number < 0:\n        print(\"Negative\")\n    else:\n        print(\"Zero\")\n\nif __name__ == \"__main__\":\n    main()"
     },
     solutionCheck: {}
   },
@@ -91,7 +97,9 @@ export const problems: Problem[] = [
       { input: `5`, output: `*\n**\n***\n****\n*****`, buggyOutput: `*\n**\n***\n****` }
     ],
     buggyTemplates: {
-      cpp: `#include <iostream>\nusing namespace std;\n\nint main() {\n    int n;\n    cin >> n;\n\n    for (int i = 1; i <= n; i++) {\n        for (int j = 1; j < i; j++) {\n            cout << "*";\n        }\n        cout << endl;\n    }\n\n    return 0;\n}`
+      cpp: `#include <iostream>\nusing namespace std;\n\nint main() {\n    int n;\n    cin >> n;\n\n    for (int i = 1; i <= n; i++) {\n        for (int j = 1; j < i; j++) {\n            cout << "*";\n        }\n        cout << endl;\n    }\n\n    return 0;\n}`,
+      java: "import java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        int n = sc.nextInt();\n\n        for (int i = 1; i <= n; i++) {\n            for (int j = 1; j < i; j++) {\n                System.out.print(\"*\");\n            }\n            System.out.println();\n        }\n    }\n}",
+      python: "def main():\n    n = int(input())\n    \n    for i in range(1, n + 1):\n        for j in range(1, i):\n            print(\"*\", end=\"\")\n        print()\n\nif __name__ == \"__main__\":\n    main()"
     },
     solutionCheck: {}
   },
@@ -111,7 +119,9 @@ export const problems: Problem[] = [
       { input: `6\n10 20 20 5 30 15`, output: `15`, buggyOutput: `15` }
     ],
     buggyTemplates: {
-      cpp: `#include <iostream>\n#include <climits>\nusing namespace std;\n\nint main() {\n    int n;\n    cin >> n;\n\n    int arr[n];\n\n    for (int i = 0; i < n; i++) {\n        cin >> arr[i];\n    }\n\n    int largest = INT_MIN;\n    int secondLargest = INT_MIN;\n    int thirdLargest = INT_MIN;\n\n    for (int i = 0; i < n; i++) {\n        if (arr[i] > largest) {\n            largest = arr[i];\n        }\n        else if (arr[i] > secondLargest) {\n            secondLargest = arr[i];\n        }\n        else if (arr[i] > thirdLargest) {\n            thirdLargest = arr[i];\n        }\n    }\n\n    cout << thirdLargest << endl;\n\n    return 0;\n}`
+      cpp: `#include <iostream>\n#include <climits>\nusing namespace std;\n\nint main() {\n    int n;\n    cin >> n;\n\n    int arr[n];\n\n    for (int i = 0; i < n; i++) {\n        cin >> arr[i];\n    }\n\n    int largest = INT_MIN;\n    int secondLargest = INT_MIN;\n    int thirdLargest = INT_MIN;\n\n    for (int i = 0; i < n; i++) {\n        if (arr[i] > largest) {\n            largest = arr[i];\n        }\n        else if (arr[i] > secondLargest) {\n            secondLargest = arr[i];\n        }\n        else if (arr[i] > thirdLargest) {\n            thirdLargest = arr[i];\n        }\n    }\n\n    cout << thirdLargest << endl;\n\n    return 0;\n}`,
+      java: "import java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        int n = sc.nextInt();\n        int[] arr = new int[n];\n\n        for (int i = 0; i < n; i++) {\n            arr[i] = sc.nextInt();\n        }\n\n        int largest = Integer.MIN_VALUE;\n        int secondLargest = Integer.MIN_VALUE;\n        int thirdLargest = Integer.MIN_VALUE;\n\n        for (int i = 0; i < n; i++) {\n            if (arr[i] > largest) {\n                largest = arr[i];\n            }\n            else if (arr[i] > secondLargest) {\n                secondLargest = arr[i];\n            }\n            else if (arr[i] > thirdLargest) {\n                thirdLargest = arr[i];\n            }\n        }\n\n        System.out.println(thirdLargest);\n    }\n}",
+      python: "import sys\n\ndef main():\n    n = int(input())\n    arr = list(map(int, input().split()))\n    \n    largest = -sys.maxsize\n    secondLargest = -sys.maxsize\n    thirdLargest = -sys.maxsize\n    \n    for num in arr:\n        if num > largest:\n            largest = num\n        elif num > secondLargest:\n            secondLargest = num\n        elif num > thirdLargest:\n            thirdLargest = num\n            \n    print(thirdLargest)\n\nif __name__ == \"__main__\":\n    main()"
     },
     solutionCheck: {}
   },
@@ -131,7 +141,9 @@ export const problems: Problem[] = [
       { input: `DEBUG`, output: `GUBED`, buggyOutput: `GUBED` }
     ],
     buggyTemplates: {
-      cpp: `#include <iostream>\n#include <string>\nusing namespace std;\n\nint main() {\n    string str;\n    cin >> str;\n\n    int left = 0;\n    int right = str.length() - 1;\n\n    while (left < right) {\n        swap(str[left], str[right]);\n\n        left++;\n        right++;\n    }\n\n    cout << str << endl;\n\n    return 0;\n}`
+      cpp: `#include <iostream>\n#include <string>\nusing namespace std;\n\nint main() {\n    string str;\n    cin >> str;\n\n    int left = 0;\n    int right = str.length() - 1;\n\n    while (left < right) {\n        swap(str[left], str[right]);\n\n        left++;\n        right++;\n    }\n\n    cout << str << endl;\n\n    return 0;\n}`,
+      java: "import java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        String str = sc.next();\n        char[] arr = str.toCharArray();\n\n        int left = 0;\n        int right = arr.length - 1;\n\n        while (left < right) {\n            char temp = arr[left];\n            arr[left] = arr[right];\n            arr[right] = temp;\n\n            left++;\n            right++;\n        }\n\n        System.out.println(new String(arr));\n    }\n}",
+      python: "def main():\n    s = list(input().strip())\n    \n    left = 0\n    right = len(s) - 1\n    \n    while left < right:\n        s[left], s[right] = s[right], s[left]\n        left += 1\n        right += 1\n        \n    print(\"\".join(s))\n\nif __name__ == \"__main__\":\n    main()"
     },
     solutionCheck: {}
   },
@@ -151,7 +163,9 @@ export const problems: Problem[] = [
       { input: `7\n2 5 8 12 16 23 38\n2`, output: `0`, buggyOutput: `0` }
     ],
     buggyTemplates: {
-      cpp: `#include <iostream>\nusing namespace std;\n\nint main() {\n    int n;\n    cin >> n;\n\n    int arr[n];\n\n    for (int i = 0; i < n; i++) {\n        cin >> arr[i];\n    }\n\n    int target;\n    cin >> target;\n\n    int low = 0;\n    int high = n - 1;\n\n    while (low <= high) {\n        int mid = (low + high) / 2;\n\n        if (arr[mid] == target) {\n            cout << mid << endl;\n            return 0;\n        }\n        else if (arr[mid] < target) {\n            high = mid - 1;\n        }\n        else {\n            low = mid + 1;\n        }\n    }\n\n    cout << -1 << endl;\n\n    return 0;\n}`
+      cpp: `#include <iostream>\nusing namespace std;\n\nint main() {\n    int n;\n    cin >> n;\n\n    int arr[n];\n\n    for (int i = 0; i < n; i++) {\n        cin >> arr[i];\n    }\n\n    int target;\n    cin >> target;\n\n    int low = 0;\n    int high = n - 1;\n\n    while (low <= high) {\n        int mid = (low + high) / 2;\n\n        if (arr[mid] == target) {\n            cout << mid << endl;\n            return 0;\n        }\n        else if (arr[mid] < target) {\n            high = mid - 1;\n        }\n        else {\n            low = mid + 1;\n        }\n    }\n\n    cout << -1 << endl;\n\n    return 0;\n}`,
+      java: "import java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        int n = sc.nextInt();\n        int[] arr = new int[n];\n\n        for (int i = 0; i < n; i++) {\n            arr[i] = sc.nextInt();\n        }\n\n        int target = sc.nextInt();\n\n        int low = 0;\n        int high = n - 1;\n\n        while (low <= high) {\n            int mid = (low + high) / 2;\n\n            if (arr[mid] == target) {\n                System.out.println(mid);\n                return;\n            }\n            else if (arr[mid] < target) {\n                high = mid - 1;\n            }\n            else {\n                low = mid + 1;\n            }\n        }\n\n        System.out.println(-1);\n    }\n}",
+      python: "def main():\n    n = int(input())\n    arr = list(map(int, input().split()))\n    target = int(input())\n    \n    low = 0\n    high = n - 1\n    \n    while low <= high:\n        mid = (low + high) // 2\n        \n        if arr[mid] == target:\n            print(mid)\n            return\n        elif arr[mid] < target:\n            high = mid - 1\n        else:\n            low = mid + 1\n            \n    print(-1)\n\nif __name__ == \"__main__\":\n    main()"
     },
     solutionCheck: {}
   },
@@ -171,7 +185,9 @@ export const problems: Problem[] = [
       { input: `aabbcc`, output: `-1`, buggyOutput: `-1` }
     ],
     buggyTemplates: {
-      cpp: `#include <iostream>\n#include <string>\nusing namespace std;\n\nint main() {\n    string str;\n    cin >> str;\n\n    int freq[26] = {0};\n\n    for (char ch : str) {\n        freq[ch - 'a']++;\n    }\n\n    for (char ch : str) {\n        if (freq[ch - 'a'] > 1) {\n            cout << ch << endl;\n            return 0;\n        }\n    }\n\n    cout << -1 << endl;\n\n    return 0;\n}`
+      cpp: `#include <iostream>\n#include <string>\nusing namespace std;\n\nint main() {\n    string str;\n    cin >> str;\n\n    int freq[26] = {0};\n\n    for (char ch : str) {\n        freq[ch - 'a']++;\n    }\n\n    for (char ch : str) {\n        if (freq[ch - 'a'] > 1) {\n            cout << ch << endl;\n            return 0;\n        }\n    }\n\n    cout << -1 << endl;\n\n    return 0;\n}`,
+      java: "import java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        String str = sc.next();\n\n        int[] freq = new int[26];\n\n        for (char ch : str.toCharArray()) {\n            freq[ch - 'a']++;\n        }\n\n        for (char ch : str.toCharArray()) {\n            if (freq[ch - 'a'] > 1) {\n                System.out.println(ch);\n                return;\n            }\n        }\n\n        System.out.println(-1);\n    }\n}",
+      python: "def main():\n    s = input().strip()\n    \n    freq = [0] * 26\n    \n    for ch in s:\n        freq[ord(ch) - ord('a')] += 1\n        \n    for ch in s:\n        if freq[ord(ch) - ord('a')] > 1:\n            print(ch)\n            return\n            \n    print(-1)\n\nif __name__ == \"__main__\":\n    main()"
     },
     solutionCheck: {}
   }

@@ -10,15 +10,8 @@ import { supabase } from '../lib/supabase';
 export function ProblemView({ session }: { session?: any }) {
   const { id } = useParams();
   const problem = problems.find(p => p.id === id);
-  const [language, setLanguage] = useState(() => {
-    if (problem?.buggyTemplates?.['cpp']) return 'cpp';
-    if (problem?.buggyTemplates?.['java']) return 'java';
-    return 'python';
-  });
-  const [code, setCode] = useState(() => {
-    const lang = problem?.buggyTemplates?.['cpp'] ? 'cpp' : (problem?.buggyTemplates?.['java'] ? 'java' : 'python');
-    return problem?.buggyTemplates?.[lang] || '';
-  });
+  const [language, setLanguage] = useState('cpp');
+  const [code, setCode] = useState(problem?.buggyTemplates?.['cpp'] || '');
   const [output, setOutput] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isRunning, setIsRunning] = useState(false);
@@ -95,14 +88,7 @@ export function ProblemView({ session }: { session?: any }) {
 
   useEffect(() => {
     if (problem && problem.buggyTemplates) {
-      if (problem.buggyTemplates[language]) {
-        setCode(problem.buggyTemplates[language]);
-      } else {
-        // Fallback if the selected language is not available for this problem
-        const fallback = problem.buggyTemplates['cpp'] ? 'cpp' : (problem.buggyTemplates['java'] ? 'java' : 'python');
-        setLanguage(fallback);
-        setCode(problem.buggyTemplates[fallback] || '');
-      }
+      setCode(problem.buggyTemplates[language]);
     }
   }, [language, problem]);
 
@@ -379,9 +365,9 @@ export function ProblemView({ session }: { session?: any }) {
               onChange={(e) => setLanguage(e.target.value)}
               className="bg-panel-bg border border-panel-border text-white px-3 py-1.5 rounded-lg outline-none focus:border-primary text-sm font-medium"
             >
-              {problem?.buggyTemplates?.['cpp'] && <option value="cpp">C++</option>}
-              {problem?.buggyTemplates?.['java'] && <option value="java">Java (OpenJDK)</option>}
-              {problem?.buggyTemplates?.['python'] && <option value="python">Python 3</option>}
+              <option value="cpp">C++ (GCC)</option>
+              <option value="java">Java (OpenJDK)</option>
+              <option value="python">Python 3</option>
             </select>
           </div>
 
