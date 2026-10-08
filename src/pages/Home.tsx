@@ -61,14 +61,13 @@ export function Home({ session }: { session?: any }) {
         const { data, error } = await supabase
           .from('submissions')
           .select('problem_id')
-          .eq('user_name', teamName)
-          .eq('status', 'Time Expired');
+          .eq('user_name', teamName);
 
         if (error) throw error;
 
-        // Get unique expired problem IDs
-        const expiredIds = new Set<number>((data || []).map(sub => sub.problem_id));
-        setSolvedProblems(expiredIds); // Reusing this state for locked problems
+        // Get unique visited problem IDs
+        const visitedIds = new Set<number>((data || []).map(sub => sub.problem_id));
+        setSolvedProblems(visitedIds); // Reusing this state for locked problems
         
         // Also check if admin approved round 3 (999)
         const { data: approvedData } = await supabase
@@ -191,7 +190,7 @@ export function Home({ session }: { session?: any }) {
                   <div className="flex items-center justify-between mt-auto pt-4 border-t border-panel-border">
                     <div className="flex items-center gap-2 text-text-secondary text-xs">
                       {isSolved ? <Lock size={14} className="text-success" /> : <Code size={14} />}
-                      <span className={isSolved ? 'text-success font-medium' : ''}>{isSolved ? 'Locked (Time Expired)' : 'Multiple Languages'}</span>
+                      <span className={isSolved ? 'text-success font-medium' : ''}>{isSolved ? 'Locked' : 'Multiple Languages'}</span>
                     </div>
                     {!isSolved && <ChevronRight className="text-primary group-hover:translate-x-1 transition-transform" size={20} />}
                   </div>

@@ -315,29 +315,21 @@ export function ProblemView({ session }: { session?: any }) {
   };
 
   const handleNextProblem = () => {
-    const currentIndex = problems.findIndex(p => p.id === problem?.id);
-    const nextProblem = problems[currentIndex + 1];
-    
-    if (nextProblem && nextProblem.round === problem?.round) {
-      navigate(`/problem/${nextProblem.id}`);
-    } else {
-      sessionStorage.removeItem('lockedRound');
-      alert("Round completed, returning to dashboard.");
-      navigate('/');
-    }
-  };
-
-  const handlePrevProblem = () => {
-    const currentIndex = problems.findIndex(p => p.id === problem?.id);
-    const prevProblem = problems[currentIndex - 1];
-    
-    if (prevProblem && prevProblem.round === problem?.round) {
-      navigate(`/problem/${prevProblem.id}`);
+    if (window.confirm("Warning: You cannot revisit this problem if you move to the next one. Are you sure you want to skip?")) {
+      const currentIndex = problems.findIndex(p => p.id === problem?.id);
+      const nextProblem = problems[currentIndex + 1];
+      
+      if (nextProblem && nextProblem.round === problem?.round) {
+        navigate(`/problem/${nextProblem.id}`);
+      } else {
+        sessionStorage.removeItem('lockedRound');
+        alert("Round completed, returning to dashboard.");
+        navigate('/');
+      }
     }
   };
 
   const currentIndex = problems.findIndex(p => p.id === problem?.id);
-  const hasPrev = currentIndex > 0 && problems[currentIndex - 1].round === problem?.round;
 
   return (
     <div className="flex flex-1 h-[calc(100vh-73px)]">
@@ -440,16 +432,6 @@ export function ProblemView({ session }: { session?: any }) {
               <Send size={16} />
               {isSubmitting ? 'Submitting...' : 'Submit'}
             </button>
-            {hasPrev && (
-              <button
-                onClick={handlePrevProblem}
-                disabled={isSubmitting || isRunning}
-                className="flex items-center gap-2 px-4 py-1.5 rounded-lg bg-panel-bg border border-panel-border hover:bg-slate-800 transition-colors text-sm font-medium disabled:opacity-50"
-              >
-                <SkipBack size={16} />
-                Prev
-              </button>
-            )}
             {hasRunCode && (
               <button
                 onClick={handleNextProblem}
