@@ -1,7 +1,8 @@
 export interface Problem {
   id: string;
   title: string;
-  difficulty: 'Easy-Medium' | 'Medium' | 'Medium-Hard';
+  round: number;
+  difficulty: 'Easy' | 'Easy-Medium' | 'Medium' | 'Medium-Hard';
   description: string;
   points: number;
   inputFormat: string;
@@ -15,8 +16,153 @@ export interface Problem {
 
 export const problems: Problem[] = [
   {
+    id: 'r2_1',
+    title: 'Add Two Numbers',
+    round: 2,
+    difficulty: 'Easy',
+    points: 10,
+    description: `Fix the compilation error so the program prints the correct sum of the two variables.`,
+    inputFormat: `No input required.`,
+    outputFormat: `Sum = 30`,
+    constraints: `None`,
+    publicSample: [{ input: ``, output: `Sum = 30` }],
+    hiddenTestCases: [{ input: ``, output: `Sum = 30`, buggyOutput: `Sum = 30` }],
+    buggyTemplates: {
+      java: `public class Main {\n    public static void main(String[] args) {\n        int a = 10;\n        int b = 20;\n        int sum = a + b;\n\n        System.out.println("Sum = " + sm); // BUG\n    }\n}`,
+      python: `def solve():\n    a = 10\n    b = 20\n    sum_val = a + b\n    print("Sum = " + str(sm)) # BUG\n\nif __name__ == "__main__":\n    solve()`
+    },
+    solutionCheck: {}
+  },
+  {
+    id: 'r2_2',
+    title: 'Even or Odd',
+    round: 2,
+    difficulty: 'Easy',
+    points: 10,
+    description: `Fix the syntax error in the conditional statement to check if the number is even or odd.`,
+    inputFormat: `No input required.`,
+    outputFormat: `Odd`,
+    constraints: `None`,
+    publicSample: [{ input: ``, output: `Odd` }],
+    hiddenTestCases: [{ input: ``, output: `Odd`, buggyOutput: `Even` }],
+    buggyTemplates: {
+      java: `public class Main {\n    public static void main(String[] args) {\n        int n = 7;\n\n        if (n % 2 = 0) // BUG\n            System.out.println("Even");\n        else\n            System.out.println("Odd");\n    }\n}`,
+      python: `def solve():\n    n = 7\n    if n % 2 = 0: # BUG\n        print("Even")\n    else:\n        print("Odd")\n\nif __name__ == "__main__":\n    solve()`
+    },
+    solutionCheck: {}
+  },
+  {
+    id: 'r2_3',
+    title: 'Find the Largest Number',
+    round: 2,
+    difficulty: 'Easy',
+    points: 10,
+    description: `Fix the logical error so the program prints the largest of the two numbers.`,
+    inputFormat: `No input required.`,
+    outputFormat: `Largest = 25`,
+    constraints: `None`,
+    publicSample: [{ input: ``, output: `Largest = 25` }],
+    hiddenTestCases: [{ input: ``, output: `Largest = 25`, buggyOutput: `Largest = 15` }],
+    buggyTemplates: {
+      java: `public class Main {\n    public static void main(String[] args) {\n        int a = 25;\n        int b = 15;\n\n        if (a < b) // BUG\n            System.out.println("Largest = " + a);\n        else\n            System.out.println("Largest = " + b);\n    }\n}`,
+      python: `def solve():\n    a = 25\n    b = 15\n    if a < b: # BUG\n        print(f"Largest = {a}")\n    else:\n        print(f"Largest = {b}")\n\nif __name__ == "__main__":\n    solve()`
+    },
+    solutionCheck: {}
+  },
+  {
+    id: 'r2_4',
+    title: 'Print Numbers 1 to 5',
+    round: 2,
+    difficulty: 'Easy',
+    points: 10,
+    description: `Fix the loop condition so the program prints numbers from 1 up to 5 inclusive.`,
+    inputFormat: `No input required.`,
+    outputFormat: `1\n2\n3\n4\n5`,
+    constraints: `None`,
+    publicSample: [{ input: ``, output: `1\n2\n3\n4\n5` }],
+    hiddenTestCases: [{ input: ``, output: `1\n2\n3\n4\n5`, buggyOutput: `1\n2\n3\n4` }],
+    buggyTemplates: {
+      java: `public class Main {\n    public static void main(String[] args) {\n        for (int i = 1; i < 5; i++) { // BUG\n            System.out.println(i);\n        }\n    }\n}`,
+      python: `def solve():\n    for i in range(1, 5): # BUG\n        print(i)\n\nif __name__ == "__main__":\n    solve()`
+    },
+    solutionCheck: {}
+  },
+  {
+    id: 'r2_5',
+    title: 'Calculate Average',
+    round: 2,
+    difficulty: 'Easy-Medium',
+    points: 15,
+    description: `Fix the operator precedence issue to correctly calculate the average of three numbers.`,
+    inputFormat: `No input required.`,
+    outputFormat: `Average = 20.0`,
+    constraints: `None`,
+    publicSample: [{ input: ``, output: `Average = 20.0` }],
+    hiddenTestCases: [{ input: ``, output: `Average = 20.0`, buggyOutput: `Average = 40.0` }],
+    buggyTemplates: {
+      java: `public class Main {\n    public static void main(String[] args) {\n        int a = 10;\n        int b = 20;\n        int c = 30;\n\n        double average = a + b + c / 3; // BUG\n\n        System.out.println("Average = " + average);\n    }\n}`,
+      python: `def solve():\n    a = 10\n    b = 20\n    c = 30\n    average = a + b + c / 3 # BUG\n    print(f"Average = {average:.1f}")\n\nif __name__ == "__main__":\n    solve()`
+    },
+    solutionCheck: {}
+  },
+  {
+    id: 'r2_6',
+    title: 'Reverse a Number',
+    round: 2,
+    difficulty: 'Easy-Medium',
+    points: 15,
+    description: `Fix the print statement so that it outputs the reversed number instead of 0.`,
+    inputFormat: `No input required.`,
+    outputFormat: `Reverse = 321`,
+    constraints: `None`,
+    publicSample: [{ input: ``, output: `Reverse = 321` }],
+    hiddenTestCases: [{ input: ``, output: `Reverse = 321`, buggyOutput: `Reverse = 0` }],
+    buggyTemplates: {
+      java: `public class Main {\n    public static void main(String[] args) {\n        int n = 123;\n        int reverse = 0;\n\n        while (n > 0) {\n            int digit = n % 10;\n            reverse = reverse * 10 + digit;\n            n = n / 10;\n        }\n\n        System.out.println("Reverse = " + n); // BUG\n    }\n}`,
+      python: `def solve():\n    n = 123\n    reverse_num = 0\n    while n > 0:\n        digit = n % 10\n        reverse_num = reverse_num * 10 + digit\n        n = n // 10\n    print(f"Reverse = {n}") # BUG\n\nif __name__ == "__main__":\n    solve()`
+    },
+    solutionCheck: {}
+  },
+  {
+    id: 'r2_7',
+    title: 'Array Sum',
+    round: 2,
+    difficulty: 'Easy-Medium',
+    points: 15,
+    description: `Fix the out of bounds error in the loop to compute the sum of the array.`,
+    inputFormat: `No input required.`,
+    outputFormat: `Sum = 100`,
+    constraints: `None`,
+    publicSample: [{ input: ``, output: `Sum = 100` }],
+    hiddenTestCases: [{ input: ``, output: `Sum = 100`, buggyOutput: `Error` }],
+    buggyTemplates: {
+      java: `public class Main {\n    public static void main(String[] args) {\n        int[] numbers = {10, 20, 30, 40};\n        int sum = 0;\n\n        for (int i = 0; i <= numbers.length; i++) { // BUG\n            sum = sum + numbers[i];\n        }\n\n        System.out.println("Sum = " + sum);\n    }\n}`,
+      python: `def solve():\n    numbers = [10, 20, 30, 40]\n    sum_val = 0\n    for i in range(len(numbers) + 1): # BUG\n        sum_val += numbers[i]\n    print(f"Sum = {sum_val}")\n\nif __name__ == "__main__":\n    solve()`
+    },
+    solutionCheck: {}
+  },
+  {
+    id: 'r2_8',
+    title: 'Palindrome Number',
+    round: 2,
+    difficulty: 'Medium',
+    points: 20,
+    description: `Fix the condition to properly verify if the original number is a palindrome.`,
+    inputFormat: `No input required.`,
+    outputFormat: `Palindrome`,
+    constraints: `None`,
+    publicSample: [{ input: ``, output: `Palindrome` }],
+    hiddenTestCases: [{ input: ``, output: `Palindrome`, buggyOutput: `Not Palindrome` }],
+    buggyTemplates: {
+      java: `public class Main {\n    public static void main(String[] args) {\n        int n = 121;\n        int original = n;\n        int reverse = 0;\n\n        while (n > 0) {\n            int digit = n % 10;\n            reverse = reverse * 10 + digit;\n            n = n / 10;\n        }\n\n        if (original == n) // BUG\n            System.out.println("Palindrome");\n        else\n            System.out.println("Not Palindrome");\n    }\n}`,
+      python: `def solve():\n    n = 121\n    original = n\n    reverse_num = 0\n    while n > 0:\n        digit = n % 10\n        reverse_num = reverse_num * 10 + digit\n        n = n // 10\n    if original == n: # BUG\n        print("Palindrome")\n    else:\n        print("Not Palindrome")\n\nif __name__ == "__main__":\n    solve()`
+    },
+    solutionCheck: {}
+  },
+  {
     id: '1',
     title: 'Smart Water Tank Monitor',
+    round: 3,
     difficulty: 'Easy-Medium',
     points: 30,
     description: `A smart water tank has a sensor that reports the water level once every minute. The controller must identify how many readings are at or below the critical level and also report the minimum water level.`,
@@ -45,6 +191,7 @@ export const problems: Problem[] = [
   {
     id: '2',
     title: 'Poultry Farm Bird Counter',
+    round: 3,
     difficulty: 'Medium',
     points: 35,
     description: `A camera processes one row of bird detections. Each detection contains the bird's position on a one-dimensional conveyor. Two detections belonging to the same bird can be closer than or equal to 2 units. Count the number of distinct birds by grouping consecutive detections whose positions differ by at most 2.`,
@@ -73,6 +220,7 @@ export const problems: Problem[] = [
   {
     id: '3',
     title: 'Hospital IV Drip Alert',
+    round: 3,
     difficulty: 'Medium-Hard',
     points: 35,
     description: `A hospital device records the remaining IV fluid volume every 30 minutes. The nurse wants to know whether the IV needs attention. A reading is considered an alert when the remaining volume is below 25 mL. Calculate the number of alert readings and the total amount of fluid remaining across all readings.`,

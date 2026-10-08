@@ -27,45 +27,54 @@ export function Home() {
         </p>
       </div>
 
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {problems.map((problem) => (
-          <Link 
-            key={problem.id} 
-            to={`/problem/${problem.id}`}
-            className="glass-panel p-6 rounded-xl hover:border-primary transition-all duration-300 group hover:shadow-lg hover:shadow-primary/20 flex flex-col h-full"
-          >
-            <div className="flex justify-between items-start mb-4">
-              <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                problem.difficulty === 'Easy-Medium' ? 'bg-success/20 text-success' :
-                problem.difficulty === 'Medium' ? 'bg-warning/20 text-warning' :
-                'bg-danger/20 text-danger'
-              }`}>
-                {problem.difficulty}
-              </span>
-              <span className="flex items-center gap-1 text-sm text-text-secondary font-medium">
-                <Trophy size={14} className="text-warning" />
-                {problem.points} pts
-              </span>
-            </div>
-            
-            <h2 className="text-xl font-bold mb-3 group-hover:text-primary transition-colors">
-              {problem.title}
-            </h2>
-            
-            <p className="text-text-secondary text-sm mb-6 line-clamp-3 flex-1">
-              {problem.description}
-            </p>
-            
-            <div className="flex items-center justify-between mt-auto pt-4 border-t border-panel-border">
-              <div className="flex items-center gap-2 text-text-secondary text-xs">
-                <Code size={14} />
-                <span>Multiple Languages</span>
-              </div>
-              <ChevronRight className="text-primary group-hover:translate-x-1 transition-transform" size={20} />
-            </div>
-          </Link>
-        ))}
-      </div>
+      {[2, 3].map(roundNum => (
+        <div key={roundNum} className="mb-12">
+          <h2 className="text-2xl font-bold mb-6 text-white border-b border-panel-border pb-3 flex items-center gap-3">
+            <span className="bg-primary/20 text-primary px-3 py-1 rounded-lg text-sm">Round {roundNum}</span>
+            {roundNum === 2 ? 'Basic Logic & Syntax Debugging' : 'Scenario-Based Advanced Debugging'}
+          </h2>
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+            {problems.filter(p => p.round === roundNum).map((problem) => (
+              <Link 
+                key={problem.id} 
+                to={`/problem/${problem.id}`}
+                className="glass-panel p-6 rounded-xl hover:border-primary transition-all duration-300 group hover:shadow-lg hover:shadow-primary/20 flex flex-col h-full"
+              >
+                <div className="flex justify-between items-start mb-4">
+                  <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                    problem.difficulty === 'Easy' ? 'bg-success/20 text-success' :
+                    problem.difficulty === 'Easy-Medium' ? 'bg-success/20 text-success' :
+                    problem.difficulty === 'Medium' ? 'bg-warning/20 text-warning' :
+                    'bg-danger/20 text-danger'
+                  }`}>
+                    {problem.difficulty}
+                  </span>
+                  <span className="flex items-center gap-1 text-sm text-text-secondary font-medium">
+                    <Trophy size={14} className="text-warning" />
+                    {problem.points} pts
+                  </span>
+                </div>
+                
+                <h2 className="text-xl font-bold mb-3 group-hover:text-primary transition-colors">
+                  {problem.title}
+                </h2>
+                
+                <p className="text-text-secondary text-sm mb-6 line-clamp-3 flex-1">
+                  {problem.description}
+                </p>
+                
+                <div className="flex items-center justify-between mt-auto pt-4 border-t border-panel-border">
+                  <div className="flex items-center gap-2 text-text-secondary text-xs">
+                    <Code size={14} />
+                    <span>Multiple Languages</span>
+                  </div>
+                  <ChevronRight className="text-primary group-hover:translate-x-1 transition-transform" size={20} />
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      ))}
       </div>
     </>
   );
