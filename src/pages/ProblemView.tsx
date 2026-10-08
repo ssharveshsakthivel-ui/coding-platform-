@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Editor } from '@monaco-editor/react';
-import { Play, Send, SkipForward, SkipBack } from 'lucide-react';
+import { Play, Send, SkipForward, SkipBack, Minimize } from 'lucide-react';
 import { problems } from '../data/problems';
 import { supabase } from '../lib/supabase';
 
@@ -308,6 +308,12 @@ export function ProblemView({ session }: { session?: any }) {
     }
   };
 
+  const handleExitFullscreen = () => {
+    if (document.fullscreenElement && document.exitFullscreen) {
+      document.exitFullscreen().catch(e => console.log(e));
+    }
+  };
+
   const currentIndex = problems.findIndex(p => p.id === problem?.id);
   const hasPrev = currentIndex > 0 && problems[currentIndex - 1].round === problem?.round;
 
@@ -317,8 +323,18 @@ export function ProblemView({ session }: { session?: any }) {
       <div className="w-1/2 p-6 overflow-y-auto border-r border-panel-border bg-bg-dark select-none">
         <div className="flex justify-between items-start mb-4">
           <h1 className="text-3xl font-bold">{problem.title}</h1>
-          <div className={`px-4 py-2 rounded-lg font-mono text-xl font-bold border ${timeLeft < 60 ? 'bg-danger/20 border-danger text-danger animate-pulse' : 'bg-panel-bg border-panel-border text-white'}`}>
-            {formatTime(timeLeft)}
+          <div className="flex gap-3">
+            <button
+              onClick={handleExitFullscreen}
+              className="px-3 py-2 rounded-lg bg-panel-bg border border-panel-border text-text-secondary hover:text-white transition-colors flex items-center gap-2 text-sm"
+              title="Exit Fullscreen"
+            >
+              <Minimize size={16} />
+              Exit Fullscreen
+            </button>
+            <div className={`px-4 py-2 rounded-lg font-mono text-xl font-bold border ${timeLeft < 60 ? 'bg-danger/20 border-danger text-danger animate-pulse' : 'bg-panel-bg border-panel-border text-white'}`}>
+              {formatTime(timeLeft)}
+            </div>
           </div>
         </div>
 

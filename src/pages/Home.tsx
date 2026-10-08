@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { problems } from '../data/problems';
 import { ChevronRight, Trophy, Code, Lock } from 'lucide-react';
 import { useState, useCallback, useEffect } from 'react';
@@ -13,6 +13,13 @@ export function Home({ session }: { session?: any }) {
   const [solvedProblems, setSolvedProblems] = useState<Set<number>>(new Set());
   const [selectedRoundToEnter, setSelectedRoundToEnter] = useState<number | null>(null);
   const [showExitWarning, setShowExitWarning] = useState(false);
+  const navigate = useNavigate();
+  
+  useEffect(() => {
+    if (document.fullscreenElement && document.exitFullscreen) {
+      document.exitFullscreen().catch(e => console.log(e));
+    }
+  }, []);
   
   const [activeRound, setActiveRound] = useState<number | null>(() => {
     const saved = sessionStorage.getItem('lockedRound');
@@ -25,6 +32,13 @@ export function Home({ session }: { session?: any }) {
       setActiveRound(selectedRoundToEnter);
       setSelectedRoundToEnter(null);
     }
+  };
+
+  const handleProblemClick = (id: string) => {
+    if (document.documentElement.requestFullscreen) {
+      document.documentElement.requestFullscreen().catch(e => console.log(e));
+    }
+    navigate(`/problem/${id}`);
   };
 
   const handleExitRound = () => {
@@ -189,9 +203,9 @@ export function Home({ session }: { session?: any }) {
               }
 
               return (
-                <Link key={problem.id} to={`/problem/${problem.id}`} className={className}>
+                <div key={problem.id} onClick={() => handleProblemClick(problem.id)} className={className}>
                   {content}
-                </Link>
+                </div>
               );
             })}
           </div>
