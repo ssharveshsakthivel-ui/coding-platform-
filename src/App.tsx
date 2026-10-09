@@ -63,6 +63,30 @@ function App() {
     return () => subscription.unsubscribe();
   }, []);
 
+  // Global Anti-Cheat: Disable Copy, Paste, Right-Click, and Drag-and-Drop after login
+  useEffect(() => {
+    if (!session) return;
+    
+    const preventCheating = (e: Event) => {
+      if (session?.user?.email === ADMIN_EMAIL) return;
+      e.preventDefault();
+    };
+
+    document.addEventListener('copy', preventCheating, true);
+    document.addEventListener('paste', preventCheating, true);
+    document.addEventListener('contextmenu', preventCheating, true);
+    document.addEventListener('dragstart', preventCheating, true);
+    document.addEventListener('drop', preventCheating, true);
+
+    return () => {
+      document.removeEventListener('copy', preventCheating, true);
+      document.removeEventListener('paste', preventCheating, true);
+      document.removeEventListener('contextmenu', preventCheating, true);
+      document.removeEventListener('dragstart', preventCheating, true);
+      document.removeEventListener('drop', preventCheating, true);
+    };
+  }, [session]);
+
   if (loading) {
     return <div className="min-h-screen flex items-center justify-center text-white">Loading...</div>;
   }
