@@ -4,8 +4,12 @@ import { ChevronRight, Trophy, Code, Lock } from 'lucide-react';
 import { useState, useCallback, useEffect } from 'react';
 import { Intro } from '../components/Intro';
 import { supabase } from '../lib/supabase';
+import { useModal } from '../components/ModalProvider';
 
 export function Home({ session }: { session?: any }) {
+  const { showAlert } = useModal();
+  const [, setTabSwitches] = useState(0);
+
   const [showIntro, setShowIntro] = useState(() => {
     return !sessionStorage.getItem('introPlayed');
   });
@@ -28,6 +32,9 @@ export function Home({ session }: { session?: any }) {
 
   const handleEnterRound = () => {
     if (selectedRoundToEnter) {
+      if (document.documentElement.requestFullscreen) {
+        document.documentElement.requestFullscreen().catch(e => console.log(e));
+      }
       sessionStorage.setItem('lockedRound', selectedRoundToEnter.toString());
       setActiveRound(selectedRoundToEnter);
       setSelectedRoundToEnter(null);
@@ -87,6 +94,53 @@ export function Home({ session }: { session?: any }) {
 
     fetchProgress();
   }, [session]);
+
+  useEffect(() => {
+    if (activeRound === null) return;
+
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        setTabSwitches(prev => {
+          const newCount = prev + 1;
+          if (newCount === 1) {
+            showAlert('Warning', 'Tab switching is strictly prohibited! (1/3 warnings)', 'warning');
+          } else if (newCount === 2) {
+            showAlert('Final Warning', 'One more tab switch will permanently block you from this round! (2/3 warnings)', 'danger');
+          } else if (newCount >= 3) {
+            showAlert('Cheating Detected', 'You have been blocked from this round for excessive tab switching.', 'danger');
+            
+            sessionStorage.setItem(`blocked_round_${activeRound}`, 'true');
+            
+            const logBlock = async () => {
+              const teamName = session?.user?.user_metadata?.team_name;
+              if (teamName) {
+                try {
+                  await supabase.from('submissions').insert([{
+                    user_name: teamName,
+                    problem_id: activeRound === 2 ? 998 : 999,
+                    code: '',
+                    language: 'system',
+                    status: `Blocked from Round ${activeRound} - Tab Switching`,
+                    score: 0
+                  }]);
+                } catch (e) {}
+              }
+            };
+            logBlock();
+            
+            sessionStorage.removeItem('lockedRound');
+            setActiveRound(null);
+          }
+          return newCount;
+        });
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
+  }, [activeRound, session, showAlert]);
 
   return (
     <>
