@@ -104,7 +104,8 @@ export function Home({ session }: { session?: any }) {
       {activeRound === null ? (
         <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto mt-12">
           {[2, 3].map(roundNum => {
-            const isLocked = roundNum === 3 && !isApproved;
+            const isBlocked = sessionStorage.getItem(`blocked_round_${roundNum}`) === 'true';
+            const isLocked = (roundNum === 3 && !isApproved) || isBlocked;
             return (
               <div 
                 key={roundNum}
@@ -123,7 +124,9 @@ export function Home({ session }: { session?: any }) {
                   {roundNum === 2 ? 'Basic Logic & Syntax Debugging' : 'Scenario-Based Advanced Debugging'}
                 </p>
                 <div className="mt-6 flex items-center gap-2 text-primary font-medium">
-                  {isLocked ? (
+                  {isBlocked ? (
+                    <span className="text-danger text-sm bg-danger/10 px-3 py-1 rounded-full">Blocked for violations</span>
+                  ) : isLocked ? (
                     <span className="text-warning text-sm bg-warning/10 px-3 py-1 rounded-full">Locked until admin approval</span>
                   ) : (
                     <>

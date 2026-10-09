@@ -32,9 +32,34 @@ export function ProblemView({ session }: { session?: any }) {
         setTabSwitches(prev => {
           const newCount = prev + 1;
           if (newCount === 1) {
-            showAlert('Warning', 'Tab switching is strictly prohibited! Do not leave the page. Your next tab switch will automatically fail you and terminate the session.', 'warning');
-          } else if (newCount >= 2) {
-            showAlert('Cheating Detected', 'You have switched tabs multiple times. Your session has been terminated.', 'danger');
+            showAlert('Warning', 'Tab switching is strictly prohibited! (1/3 warnings)', 'warning');
+          } else if (newCount === 2) {
+            showAlert('Final Warning', 'One more tab switch will permanently block you from this round! (2/3 warnings)', 'danger');
+          } else if (newCount >= 3) {
+            showAlert('Cheating Detected', 'You have been blocked from this round for excessive tab switching.', 'danger');
+            
+            if (problem?.round) {
+              sessionStorage.setItem(`blocked_round_${problem.round}`, 'true');
+            }
+            
+            const logBlock = async () => {
+              const teamName = session?.user?.user_metadata?.team_name;
+              if (teamName && problem) {
+                try {
+                  await supabase.from('submissions').insert([{
+                    user_name: teamName,
+                    problem_id: parseInt(problem.id),
+                    code: '',
+                    language: 'system',
+                    status: `Blocked from Round ${problem.round} - Tab Switching`,
+                    score: 0
+                  }]);
+                } catch (e) {}
+              }
+            };
+            logBlock();
+            
+            sessionStorage.removeItem('lockedRound');
             navigate('/');
           }
           return newCount;
@@ -46,7 +71,7 @@ export function ProblemView({ session }: { session?: any }) {
     return () => {
       document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
-  }, [navigate, showAlert]);
+  }, [navigate, showAlert, problem, session]);
 
   // Anti-Cheat: Prevent Browser Back Button
   useEffect(() => {
